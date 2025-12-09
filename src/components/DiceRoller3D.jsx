@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import './DiceRoller3D.css';
 
-function DiceRoller3D({ onRollComplete, diceType, diceCount, externalRoll = null }) {
+function DiceRoller3D({ onRollComplete, externalRoll = null }) {
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const [isRolling, setIsRolling] = useState(false);
@@ -236,8 +236,9 @@ function DiceRoller3D({ onRollComplete, diceType, diceCount, externalRoll = null
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (containerRef.current && renderer.domElement) {
-        containerRef.current.removeChild(renderer.domElement);
+      const container = containerRef.current;
+      if (container && renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
       }
       renderer.dispose();
     };

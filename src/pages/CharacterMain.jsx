@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { database } from '../utils/database';
-import { rollDice, diceTypes, sumRolls } from '../utils/dice';
+import { diceTypes } from '../utils/dice';
+import { wsClient } from '../utils/websocket';
+import DiceRoller3D from '../components/DiceRoller3D';
 import './CharacterMain.css';
 
 function CharacterMain({ character, onUpdate }) {
@@ -9,13 +11,52 @@ function CharacterMain({ character, onUpdate }) {
   const [diceRolls, setDiceRolls] = useState([]);
   const [selectedDice, setSelectedDice] = useState(6);
   const [diceCount, setDiceCount] = useState(1);
+  const [externalRoll, setExternalRoll] = useState(null);
+  const [use3DDice, setUse3DDice] = useState(true);
+  const diceRollerRef = useRef(null);
 
   useEffect(() => {
     if (character) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTempHp(character.hp);
+      
+      // Update character in WebSocket if connected
+      if (wsClient.isConnected()) {
+        wsClient.setCharacter(character);
+      }
     }
   }, [character]);
+
+  useEffect(() => {
+    // Listen for dice rolls from other players
+    const handleRemoteDiceRoll = (data) => {
+      if (data.clientId !== wsClient.getClientId()) {
+        // Show external roll in 3D view
+        setExternalRoll({
+          sides: data.roll.sides,
+          count: data.roll.rolls.length
+        });
+        
+        // Add to roll history
+        const result = {
+          id: Date.now(),
+          type: `${data.roll.rolls.length}D${data.roll.sides}`,
+          rolls: data.roll.rolls,
+          total: data.roll.total,
+          timestamp: new Date(data.timestamp).toLocaleTimeString(),
+          player: data.character?.name || 'Unknown Player',
+          isRemote: true
+        };
+        setDiceRolls(prev => [result, ...prev.slice(0, 9)]);
+      }
+    };
+
+    wsClient.on('dice_roll', handleRemoteDiceRoll);
+
+    return () => {
+      wsClient.off('dice_roll', handleRemoteDiceRoll);
+    };
+  }, []);
 
   const handleHpChange = (newHp) => {
     const clampedHp = Math.max(0, Math.min(newHp, character.maxHp));
@@ -25,16 +66,56 @@ function CharacterMain({ character, onUpdate }) {
   };
 
   const handleDiceRoll = () => {
-    const rolls = rollDice(selectedDice, diceCount);
-    const total = sumRolls(rolls);
+    if (use3DDice && diceRollerRef.current && diceRollerRef.current.rollDice) {
+      // Trigger 3D dice roll
+      diceRollerRef.current.rollDice(selectedDice, diceCount);
+    } else {
+      // Fallback to simple roll
+      handle2DDiceRoll();
+    }
+  };
+
+  const handle2DDiceRoll = () => {
+    const rolls = [];
+    for (let i = 0; i < diceCount; i++) {
+      rolls.push(Math.floor(Math.random() * selectedDice) + 1);
+    }
+    const total = rolls.reduce((sum, roll) => sum + roll, 0);
+    
     const result = {
       id: Date.now(),
       type: `${diceCount}D${selectedDice}`,
       rolls,
       total,
-      timestamp: new Date().toLocaleTimeString()
+      timestamp: new Date().toLocaleTimeString(),
+      sides: selectedDice
     };
+    
     setDiceRolls(prev => [result, ...prev.slice(0, 9)]);
+
+    // Broadcast to multiplayer server
+    if (wsClient.isConnected()) {
+      wsClient.sendDiceRoll(result);
+    }
+  };
+
+  const handle3DRollComplete = (rolls) => {
+    const total = rolls.reduce((sum, roll) => sum + roll, 0);
+    const result = {
+      id: Date.now(),
+      type: `${rolls.length}D${selectedDice}`,
+      rolls,
+      total,
+      timestamp: new Date().toLocaleTimeString(),
+      sides: selectedDice
+    };
+    
+    setDiceRolls(prev => [result, ...prev.slice(0, 9)]);
+
+    // Broadcast to multiplayer server
+    if (wsClient.isConnected()) {
+      wsClient.sendDiceRoll(result);
+    }
   };
 
   const getStatModifier = (stat) => {
@@ -169,7 +250,27 @@ function CharacterMain({ character, onUpdate }) {
         <div className="right-column">
           {/* Dice Roller Card */}
           <div className="card dice-roller">
-            <div className="card-header">🎲 Dice Roller</div>
+            <div className="card-header">
+              🎲 Dice Roller
+              <button 
+                className="btn-small" 
+                onClick={() => setUse3DDice(!use3DDice)}
+                title={use3DDice ? 'Switch to 2D' : 'Switch to 3D'}
+              >
+                {use3DDice ? '🎲 3D' : '🎲 2D'}
+              </button>
+            </div>
+            
+            {use3DDice && (
+              <DiceRoller3D
+                ref={diceRollerRef}
+                diceType={selectedDice}
+                diceCount={diceCount}
+                onRollComplete={handle3DRollComplete}
+                externalRoll={externalRoll}
+              />
+            )}
+            
             <div className="dice-controls">
               <div className="form-group">
                 <label>Number of Dice</label>
@@ -202,9 +303,13 @@ function CharacterMain({ character, onUpdate }) {
               <div className="dice-results">
                 <h3>Recent Rolls</h3>
                 {diceRolls.map(roll => (
-                  <div key={roll.id} className="dice-result">
+                  <div key={roll.id} className={`dice-result ${roll.isRemote ? 'remote-roll' : ''}`}>
                     <div className="result-header">
-                      <span className="result-type">{roll.type}</span>
+                      <span className="result-type">
+                        {roll.isRemote && <span className="remote-badge">👥 </span>}
+                        {roll.type}
+                        {roll.player && <span className="player-name"> - {roll.player}</span>}
+                      </span>
                       <span className="result-time">{roll.timestamp}</span>
                     </div>
                     <div className="result-rolls">

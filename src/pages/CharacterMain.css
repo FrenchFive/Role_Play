@@ -176,6 +176,28 @@
   background-color: var(--color-accent);
 }
 
+.dice-roller .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-secondary);
+  cursor: pointer;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-small:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
 .dice-controls {
   display: flex;
   flex-direction: column;
@@ -249,4 +271,30 @@
   font-weight: bold;
   color: var(--color-text);
   text-align: right;
+}
+
+.dice-result.remote-roll {
+  background-color: var(--color-purple);
+}
+
+.remote-badge {
+  display: inline-block;
+  animation: fadeIn 0.5s;
+}
+
+.player-name {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-light);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

@@ -9,43 +9,6 @@ function Settings({ currentCharacter, onClose }) {
   const [connectionStatus, setConnectionStatus] = useState('');
   const [connectedUsers, setConnectedUsers] = useState([]);
 
-  useEffect(() => {
-    // Load server config (check if running in Electron)
-    if (window.electronAPI) {
-      window.electronAPI.getServerConfig().then(config => {
-        if (config.serverIp) {
-          setServerUrl(config.serverIp);
-        }
-      });
-    } else {
-      // Web version - use localStorage
-      const savedUrl = localStorage.getItem('server_url');
-      if (savedUrl) {
-        setServerUrl(savedUrl);
-      }
-    }
-
-    // Check if already connected
-    setIsConnected(wsClient.isConnected());
-
-    // Set up WebSocket event listeners
-    wsClient.on('connected', handleConnected);
-    wsClient.on('disconnected', handleDisconnected);
-    wsClient.on('user_list', handleUserList);
-    wsClient.on('user_joined', handleUserJoined);
-    wsClient.on('user_left', handleUserLeft);
-    wsClient.on('error', handleError);
-
-    return () => {
-      wsClient.off('connected', handleConnected);
-      wsClient.off('disconnected', handleDisconnected);
-      wsClient.off('user_list', handleUserList);
-      wsClient.off('user_joined', handleUserJoined);
-      wsClient.off('user_left', handleUserLeft);
-      wsClient.off('error', handleError);
-    };
-  }, []);
-
   const handleConnected = () => {
     setIsConnected(true);
     setConnectionStatus('Connected successfully!');
@@ -73,6 +36,45 @@ function Settings({ currentCharacter, onClose }) {
   const handleError = (error) => {
     setConnectionStatus(`Error: ${error.message || 'Connection failed'}`);
   };
+
+  useEffect(() => {
+    // Load server config (check if running in Electron)
+    if (window.electronAPI) {
+      window.electronAPI.getServerConfig().then(config => {
+        if (config.serverIp) {
+          setServerUrl(config.serverIp);
+        }
+      });
+    } else {
+      // Web version - use localStorage
+      const savedUrl = localStorage.getItem('server_url');
+      if (savedUrl) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setServerUrl(savedUrl);
+      }
+    }
+
+    // Check if already connected
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsConnected(wsClient.isConnected());
+
+    // Set up WebSocket event listeners
+    wsClient.on('connected', handleConnected);
+    wsClient.on('disconnected', handleDisconnected);
+    wsClient.on('user_list', handleUserList);
+    wsClient.on('user_joined', handleUserJoined);
+    wsClient.on('user_left', handleUserLeft);
+    wsClient.on('error', handleError);
+
+    return () => {
+      wsClient.off('connected', handleConnected);
+      wsClient.off('disconnected', handleDisconnected);
+      wsClient.off('user_list', handleUserList);
+      wsClient.off('user_joined', handleUserJoined);
+      wsClient.off('user_left', handleUserLeft);
+      wsClient.off('error', handleError);
+    };
+  }, []);
 
   const handleConnect = () => {
     if (!serverUrl) {
