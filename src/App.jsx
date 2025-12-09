@@ -15,6 +15,7 @@ function App() {
     // Load current character on app start
     const char = database.getCurrentCharacter();
     if (char) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentCharacter(char);
       setCurrentView('main');
     }

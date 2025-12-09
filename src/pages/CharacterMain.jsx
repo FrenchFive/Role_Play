@@ -12,6 +12,7 @@ function CharacterMain({ character, onUpdate }) {
 
   useEffect(() => {
     if (character) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTempHp(character.hp);
     }
   }, [character]);

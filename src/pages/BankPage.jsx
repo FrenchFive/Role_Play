@@ -8,16 +8,17 @@ function BankPage({ character }) {
   const [description, setDescription] = useState('');
   const [transactionType, setTransactionType] = useState('deposit');
 
-  useEffect(() => {
-    if (character) {
-      loadBankData();
-    }
-  }, [character]);
-
   const loadBankData = () => {
     const data = bankDatabase.getBank(character.id);
     setBankData(data);
   };
+
+  useEffect(() => {
+    if (character) {
+      loadBankData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [character]);
 
   const handleTransaction = () => {
     const numAmount = parseFloat(amount);

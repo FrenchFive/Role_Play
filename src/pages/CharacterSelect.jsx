@@ -6,15 +6,16 @@ function CharacterSelect({ onSelectCharacter, onCreateNew }) {
   const [characters, setCharacters] = useState([]);
   const [currentCharacterId, setCurrentCharacterId] = useState(null);
 
-  useEffect(() => {
-    loadCharacters();
-  }, []);
-
   const loadCharacters = () => {
     const chars = database.getAllCharacters();
     setCharacters(chars);
     setCurrentCharacterId(database.getCurrentCharacterId());
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCharacters();
+  }, []);
 
   const handleSelect = (character) => {
     database.setCurrentCharacter(character.id);
