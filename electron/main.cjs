@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -39,7 +39,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.cjs')
     },
     icon: path.join(__dirname, '../public/icon.png'),
     title: 'Hunters RPG'
@@ -88,7 +88,6 @@ ipcMain.handle('set-server-config', (event, config) => {
 
 // IPC handler for file operations (import/export characters)
 ipcMain.handle('save-file', async (event, { data, defaultPath }) => {
-  const { dialog } = require('electron');
   const result = await dialog.showSaveDialog(mainWindow, {
     defaultPath,
     filters: [
@@ -109,7 +108,6 @@ ipcMain.handle('save-file', async (event, { data, defaultPath }) => {
 });
 
 ipcMain.handle('open-file', async () => {
-  const { dialog } = require('electron');
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
     filters: [
