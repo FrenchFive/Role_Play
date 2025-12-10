@@ -35,7 +35,7 @@
     "publish": {
       "provider": "github",
       "owner": "FrenchFive",
-      "repo": "s0lstice-os"
+      "repo": "S0LSTICE_OS"
     },
     "win": {
       "target": [
