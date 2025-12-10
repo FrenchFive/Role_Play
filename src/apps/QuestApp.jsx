@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { questDatabase } from '../utils/sharedData';
 import { wsClient } from '../utils/websocket';
+import { ChecklistIcon, PlusIcon, XIcon, TrashIcon } from '../components/icons/Icons';
 import './QuestApp.css';
 
 function QuestApp() {
@@ -98,13 +99,13 @@ function QuestApp() {
   };
 
   const getCategoryIcon = (category) => {
-    const icons = {
-      'Main Quest': '🎯',
-      'Side Quest': '📌',
-      'Personal Goal': '⭐',
-      'Party Objective': '👥'
+    const labels = {
+      'Main Quest': 'Main',
+      'Side Quest': 'Side',
+      'Personal Goal': 'Personal',
+      'Party Objective': 'Party'
     };
-    return icons[category] || '📋';
+    return labels[category] || 'Quest';
   };
 
   const getPriorityClass = (priority) => {
@@ -121,9 +122,9 @@ function QuestApp() {
   return (
     <div className="quest-app">
       <div className="quest-header">
-        <h1>✅ Quest Log</h1>
+        <h1><ChecklistIcon size={32} /> Quest Log</h1>
         <button className="btn-add-quest" onClick={() => setShowAddForm(!showAddForm)}>
-          {showAddForm ? '✖ Cancel' : '➕ Add Quest'}
+          {showAddForm ? <><XIcon size={16} /> Cancel</> : <><PlusIcon size={16} /> Add Quest</>}
         </button>
       </div>
 
@@ -199,14 +200,14 @@ function QuestApp() {
             </div>
           </div>
 
-          <button type="submit" className="btn-submit">💾 Save Quest</button>
+          <button type="submit" className="btn-submit">Save Quest</button>
         </form>
       )}
 
       <div className="quest-list">
         {quests.length === 0 ? (
           <div className="empty-state">
-            <p>📝 No quests yet</p>
+            <p>No quests yet</p>
             <p className="empty-subtitle">Add a quest to track your party's objectives</p>
           </div>
         ) : (
@@ -251,7 +252,7 @@ function QuestApp() {
                     handleDeleteQuest(quest.id);
                   }}
                 >
-                  🗑️
+                  <TrashIcon size={16} />
                 </button>
               </div>
             </div>
@@ -262,7 +263,7 @@ function QuestApp() {
       {selectedQuest && (
         <div className="quest-modal" onClick={() => setSelectedQuest(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="btn-close" onClick={() => setSelectedQuest(null)}>✖</button>
+            <button className="btn-close" onClick={() => setSelectedQuest(null)}><XIcon size={16} /></button>
             
             <h2>{getCategoryIcon(selectedQuest.category)} {selectedQuest.title}</h2>
             
@@ -272,7 +273,7 @@ function QuestApp() {
               </span>
               <span className="badge">{selectedQuest.category}</span>
               <span className="badge">
-                {selectedQuest.completed ? '✅ Completed' : '🔄 In Progress'}
+                {selectedQuest.completed ? 'Completed' : 'In Progress'}
               </span>
             </div>
 

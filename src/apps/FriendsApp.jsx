@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { wsClient } from '../utils/websocket';
 import { dmMode } from '../utils/database';
+import { UsersIcon, WifiIcon, CrownIcon, SwordsIcon } from '../components/icons/Icons';
 import './FriendsApp.css';
 
 function FriendsApp() {
@@ -63,7 +64,7 @@ function FriendsApp() {
   return (
     <div className="friends-app">
       <div className="friends-header">
-        <h2>👥 Party & Friends</h2>
+        <h2><UsersIcon size={28} /> Party & Friends</h2>
         {wsClient.isConnected() && myPing !== null && (
           <div className="my-ping">
             Ping: <span style={{ color: getPingColor(myPing) }}>{myPing}ms</span>
@@ -73,7 +74,7 @@ function FriendsApp() {
 
       {!wsClient.isConnected() && (
         <div className="offline-message">
-          <p>🔌 Not connected to server</p>
+          <p><WifiIcon size={24} /> Not connected to server</p>
           <p>Go to Settings to connect</p>
         </div>
       )}
@@ -83,12 +84,12 @@ function FriendsApp() {
           {/* Dungeon Master Section */}
           {dmUsers.length > 0 && (
             <div className="friends-section">
-              <h3>🎲 Dungeon Master</h3>
+              <h3><CrownIcon size={20} /> Dungeon Master</h3>
               <div className="friends-list">
                 {dmUsers.map(user => (
                   <div key={user.id} className="friend-card dm-card">
                     <div className="friend-avatar">
-                      <div className="avatar-icon">👑</div>
+                      <div className="avatar-icon"><CrownIcon size={20} /></div>
                       <div className="status-indicator online"></div>
                     </div>
                     <div className="friend-info">
@@ -98,7 +99,7 @@ function FriendsApp() {
                       <div className="friend-role">DM • Level {user.character?.level || '?'}</div>
                     </div>
                     <div className="friend-ping">
-                      🌐 <span style={{ color: getPingColor(user.ping) }}>Connected</span>
+                      <span style={{ color: getPingColor(user.ping) }}>Connected</span>
                     </div>
                   </div>
                 ))}
@@ -108,11 +109,10 @@ function FriendsApp() {
 
           {/* Party Members Section */}
           <div className="friends-section">
-            <h3>⚔️ Party Members</h3>
+            <h3><SwordsIcon size={20} /> Party Members</h3>
             {playerUsers.length === 0 ? (
               <div className="no-friends">
                 <p>No party members online</p>
-                <p>😢</p>
               </div>
             ) : (
               <div className="friends-list">
@@ -136,7 +136,7 @@ function FriendsApp() {
                         </div>
                       </div>
                       <div className="friend-ping">
-                        🌐 <span style={{ color: getPingColor(user.ping) }}>
+                        <span style={{ color: getPingColor(user.ping) }}>
                           {user.ping ? `${user.ping}ms` : 'Connected'}
                         </span>
                       </div>

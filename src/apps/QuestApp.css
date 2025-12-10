@@ -1,5 +1,5 @@
 .quest-app {
-  padding: 20px;
+  padding: var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -8,93 +8,101 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .quest-header h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .btn-add-quest {
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: bold;
-  border: 4px solid #000;
-  border-radius: 12px;
-  background: #BAFFC9;
-  color: #000;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
+  background: var(--color-success-light);
+  color: var(--color-text);
   cursor: pointer;
-  box-shadow: 6px 6px 0 #000;
-  transition: all 0.2s;
+  box-shadow: var(--shadow-offset-md);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .btn-add-quest:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-offset-hover);
 }
 
 .quest-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #FFB3BA 0%, #FFDFBA 100%);
-  border: 4px solid #000;
-  border-radius: 12px;
-  padding: 20px;
+  background: var(--pastel-peach);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
   text-align: center;
-  box-shadow: 6px 6px 0 #000;
+  box-shadow: var(--shadow-offset-md);
 }
 
 .stat-value {
-  font-size: 36px;
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text);
 }
 
 .stat-label {
-  font-size: 14px;
-  color: #333;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
 }
 
 .quest-form {
-  background: #FFFFBA;
-  border: 4px solid #000;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 6px 6px 0 #000;
+  background: var(--pastel-cream);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
+  box-shadow: var(--shadow-offset-md);
 }
 
 .quest-form h3 {
   margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-2xl);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 14px;
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 3px solid #000;
-  border-radius: 8px;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-base);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
   font-family: inherit;
 }
 
@@ -106,73 +114,74 @@
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: var(--spacing-lg);
 }
 
 .btn-submit {
   width: 100%;
-  padding: 15px;
-  font-size: 18px;
-  font-weight: bold;
-  border: 4px solid #000;
-  border-radius: 12px;
-  background: #BAE1FF;
-  color: #000;
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
+  background: var(--color-info-light);
+  color: var(--color-text);
   cursor: pointer;
-  box-shadow: 6px 6px 0 #000;
-  transition: all 0.2s;
+  box-shadow: var(--shadow-offset-md);
+  transition: all var(--transition-fast);
 }
 
 .btn-submit:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-offset-hover);
 }
 
 .quest-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-lg);
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  background: #F5F5F5;
-  border: 4px solid #000;
-  border-radius: 12px;
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  background: var(--color-bg-subtle);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
 }
 
 .empty-state p {
-  font-size: 24px;
-  margin: 10px 0;
+  font-size: var(--font-size-xl);
+  margin: var(--spacing-sm) 0;
+  color: var(--color-text-secondary);
 }
 
 .empty-subtitle {
-  font-size: 16px !important;
-  color: #666;
+  font-size: var(--font-size-base) !important;
+  color: var(--color-text-light) !important;
 }
 
 .quest-card {
   display: flex;
   align-items: flex-start;
-  gap: 15px;
-  padding: 20px;
-  background: #fff;
-  border: 4px solid #000;
-  border-radius: 12px;
-  box-shadow: 6px 6px 0 #000;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  background: var(--color-surface);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-offset-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .quest-card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-offset-hover);
 }
 
 .quest-card.completed {
   opacity: 0.7;
-  background: #E8E8E8;
+  background: var(--color-bg-subtle);
 }
 
 .quest-card.completed .quest-title {
@@ -180,19 +189,19 @@
 }
 
 .quest-card.priority-low {
-  border-left: 8px solid #BAFFC9;
+  border-left: 8px solid var(--color-success-light);
 }
 
 .quest-card.priority-medium {
-  border-left: 8px solid #FFFFBA;
+  border-left: 8px solid var(--color-warning-light);
 }
 
 .quest-card.priority-high {
-  border-left: 8px solid #FFDFBA;
+  border-left: 8px solid var(--pastel-peach);
 }
 
 .quest-card.priority-urgent {
-  border-left: 8px solid #FFB3BA;
+  border-left: 8px solid var(--color-danger-light);
 }
 
 .quest-checkbox {
@@ -211,48 +220,49 @@
 }
 
 .quest-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-sm);
 }
 
 .quest-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 13px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
 }
 
 .quest-category,
 .quest-priority,
 .quest-author {
-  padding: 4px 10px;
-  border: 2px solid #000;
-  border-radius: 6px;
-  background: #fff;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 2px solid var(--outline-color);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-weight: var(--font-weight-medium);
 }
 
 .quest-priority.priority-low {
-  background: #BAFFC9;
+  background: var(--color-success-light);
 }
 
 .quest-priority.priority-medium {
-  background: #FFFFBA;
+  background: var(--color-warning-light);
 }
 
 .quest-priority.priority-high {
-  background: #FFDFBA;
+  background: var(--pastel-peach);
 }
 
 .quest-priority.priority-urgent {
-  background: #FFB3BA;
+  background: var(--color-danger-light);
 }
 
 .quest-description {
-  font-size: 14px;
-  color: #444;
-  margin-top: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-sm);
   line-height: 1.4;
 }
 
@@ -261,13 +271,16 @@
 }
 
 .btn-delete {
-  padding: 8px 12px;
-  font-size: 18px;
-  border: 3px solid #000;
-  border-radius: 8px;
-  background: #FFB3BA;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-lg);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-light);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-delete:hover {
@@ -284,126 +297,129 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--spacing-xl);
   z-index: 1000;
 }
 
 .modal-content {
-  background: #fff;
-  border: 4px solid #000;
-  border-radius: 12px;
-  padding: 30px;
+  background: var(--color-surface);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
   max-width: 600px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 10px 10px 0 #000;
+  box-shadow: var(--shadow-offset-lg);
   position: relative;
 }
 
 .btn-close {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  padding: 8px 12px;
-  font-size: 18px;
-  font-weight: bold;
-  border: 3px solid #000;
-  border-radius: 8px;
-  background: #FFB3BA;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-light);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content h2 {
   margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 28px;
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-2xl);
 }
 
 .modal-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
 }
 
 .badge {
-  padding: 6px 12px;
-  border: 3px solid #000;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: bold;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
 }
 
 .badge.priority-low {
-  background: #BAFFC9;
+  background: var(--color-success-light);
 }
 
 .badge.priority-medium {
-  background: #FFFFBA;
+  background: var(--color-warning-light);
 }
 
 .badge.priority-high {
-  background: #FFDFBA;
+  background: var(--pastel-peach);
 }
 
 .badge.priority-urgent {
-  background: #FFB3BA;
+  background: var(--color-danger-light);
 }
 
 .modal-section {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .modal-section h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-sm);
 }
 
 .modal-section p {
   line-height: 1.6;
-  color: #333;
+  color: var(--color-text-secondary);
 }
 
 .modal-info {
-  font-size: 14px;
-  color: #666;
-  margin: 5px 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: var(--spacing-xs) 0;
 }
 
 .modal-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 25px;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
 }
 
 .btn-toggle,
 .btn-delete-large {
   flex: 1;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: bold;
-  border: 4px solid #000;
-  border-radius: 12px;
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: 6px 6px 0 #000;
-  transition: all 0.2s;
+  box-shadow: var(--shadow-offset-md);
+  transition: all var(--transition-fast);
 }
 
 .btn-complete {
-  background: #BAFFC9;
+  background: var(--color-success-light);
 }
 
 .btn-uncomplete {
-  background: #FFFFBA;
+  background: var(--color-warning-light);
 }
 
 .btn-delete-large {
-  background: #FFB3BA;
+  background: var(--color-danger-light);
 }
 
 .btn-toggle:hover,
 .btn-delete-large:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-offset-hover);
 }

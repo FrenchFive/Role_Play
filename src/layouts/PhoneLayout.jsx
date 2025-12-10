@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { wsClient } from '../utils/websocket';
 import { database } from '../utils/database';
+import {
+  WifiIcon,
+  WifiOffIcon,
+  BatteryFullIcon,
+  BatteryMediumIcon,
+  BatteryLowIcon,
+  CrownIcon,
+  HomeIcon,
+} from '../components/icons/Icons';
 import './PhoneLayout.css';
 
 function PhoneLayout({ children, currentApp, onAppChange }) {
@@ -81,10 +90,10 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
   };
 
   const getBatteryIcon = () => {
-    if (battery > 75) return '🔋';
-    if (battery > 50) return '🔋';
-    if (battery > 25) return '🪫';
-    return '🪫';
+    if (battery > 75) return <BatteryFullIcon size={18} />;
+    if (battery > 50) return <BatteryMediumIcon size={18} />;
+    if (battery > 25) return <BatteryMediumIcon size={18} />;
+    return <BatteryLowIcon size={18} />;
   };
 
   const getBatteryColor = () => {
@@ -103,18 +112,18 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
         <div className="status-right">
           {dmOnline && isConnected && (
             <div className="status-dm" title="DM Online">
-              <span>👑</span>
+              <CrownIcon size={18} />
             </div>
           )}
           <div className="status-wifi" title={isConnected && ping ? `Ping: ${ping}ms` : 'Not connected'}>
             {isConnected ? (
-              <span className="wifi-connected">📶</span>
+              <span className="wifi-connected"><WifiIcon size={18} /></span>
             ) : (
-              <span className="wifi-disconnected">📵</span>
+              <span className="wifi-disconnected"><WifiOffIcon size={18} /></span>
             )}
           </div>
           <div className="status-battery" style={{ color: getBatteryColor() }}>
-            <span>{getBatteryIcon()}</span>
+            <span className="battery-icon">{getBatteryIcon()}</span>
             <span className="battery-percent">{battery}%</span>
           </div>
         </div>
@@ -140,7 +149,7 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
             onClick={() => onAppChange('home')}
             title="Home"
           >
-            ⬤
+            <HomeIcon size={24} />
           </button>
         </div>
       )}
