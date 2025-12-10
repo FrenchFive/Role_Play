@@ -4,7 +4,10 @@
   "version": "1.0.0",
   "main": "electron/main.js",
   "description": "S0LSTICE_OS - Your Hunter's Digital Companion",
-  "author": "FrenchFive",
+  "author": {
+    "name": "FrenchFive",
+    "email": "frenchfive@example.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
