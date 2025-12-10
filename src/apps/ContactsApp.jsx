@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './ContactsApp.css';
 import * as contactsDb from '../utils/sharedData';
 import { database as db, dmMode } from '../utils/database';
@@ -20,7 +20,7 @@ export default function ContactsApp() {
   const character = db.getCharacter(db.getCurrentCharacterId());
   const isDM = dmMode.isDM();
 
-  const loadContacts = () => {
+  const loadContacts = useCallback(() => {
     const allContacts = contactsDb.contactsDatabase.getAllContacts();
     
     if (isDM) {
@@ -34,9 +34,9 @@ export default function ContactsApp() {
       );
       setContacts(filtered);
     }
-  };
+  }, [isDM]);
 
-  const loadMessages = () => {
+  const loadMessages = useCallback(() => {
     const allMessages = contactsDb.messagesDatabase.getAllMessages();
     const charId = db.getCurrentCharacterId();
     
@@ -48,7 +48,7 @@ export default function ContactsApp() {
       const filtered = allMessages.filter(m => m.characterId === charId);
       setMessages(filtered);
     }
-  };
+  }, [isDM]);
 
   useEffect(() => {
     loadContacts();
