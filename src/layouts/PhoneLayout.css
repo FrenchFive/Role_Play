@@ -1,12 +1,13 @@
 /* ==========================================
    PHONE LAYOUT - Main App Shell
+   Responsive design that adapts to all screens
    ========================================== */
 
 .phone-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   background-color: var(--color-bg);
   overflow: hidden;
 }
@@ -19,10 +20,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-3) var(--spacing-5);
+  padding: var(--spacing-2) var(--spacing-4);
   background-color: var(--color-surface);
   border-bottom: var(--outline-width) solid var(--outline-color);
-  height: 52px;
+  height: 44px;
+  min-height: 44px;
   flex-shrink: 0;
   box-shadow: 0 4px 0 var(--outline-color);
   z-index: var(--z-sticky);
@@ -31,7 +33,7 @@
 .status-left {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
 }
 
 .status-time {
@@ -43,7 +45,7 @@
 .status-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
 }
 
 .status-icon {
@@ -51,6 +53,11 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text-secondary);
+}
+
+.status-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .status-icon.connected {
@@ -69,8 +76,8 @@
 .status-battery {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-1) var(--spacing-3);
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
   background-color: var(--color-bg-sunken);
   border: 2px solid var(--outline-color);
   border-radius: var(--radius-md);
@@ -83,6 +90,11 @@
   align-items: center;
 }
 
+.battery-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
 .battery-high { color: var(--color-success); }
 .battery-medium { color: var(--color-warning); }
 .battery-low { color: var(--color-danger); }
@@ -93,19 +105,21 @@
 
 .notification-toast {
   position: fixed;
-  top: 68px;
+  top: 56px;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--color-surface);
   color: var(--color-text);
-  padding: var(--spacing-3) var(--spacing-6);
+  padding: var(--spacing-3) var(--spacing-5);
   border: var(--outline-width) solid var(--outline-color);
   border-radius: var(--radius-lg);
   font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
   box-shadow: var(--shadow-lg);
   z-index: var(--z-toast);
   animation: toastSlideIn 0.3s ease-out;
-  max-width: calc(100% - 40px);
+  max-width: calc(100% - 32px);
+  text-align: center;
 }
 
 @keyframes toastSlideIn {
@@ -128,6 +142,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background-color: var(--color-bg);
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ==========================================
@@ -135,7 +150,8 @@
    ========================================== */
 
 .phone-home-bar {
-  height: 72px;
+  height: 56px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,11 +159,13 @@
   border-top: var(--outline-width) solid var(--outline-color);
   flex-shrink: 0;
   padding: var(--spacing-2);
+  /* Safe area for devices with home indicators */
+  padding-bottom: max(var(--spacing-2), env(safe-area-inset-bottom, 0));
 }
 
 .home-button {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
   background-color: var(--color-surface);
   border: var(--outline-width) solid var(--outline-color);
@@ -160,13 +178,18 @@
   color: var(--color-text);
 }
 
+.home-button svg {
+  width: 20px;
+  height: 20px;
+}
+
 .home-button:hover {
   transform: translate(-2px, -2px);
   box-shadow: var(--shadow-hover);
 }
 
 .home-button:active {
-  transform: translate(2px, 2px);
+  transform: translate(1px, 1px);
   box-shadow: var(--shadow-active);
 }
 
@@ -178,28 +201,37 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
-  padding: var(--spacing-4) var(--spacing-5);
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--color-surface);
   border-bottom: var(--outline-width) solid var(--outline-color);
   box-shadow: 0 4px 0 var(--outline-color);
   position: sticky;
   top: 0;
   z-index: var(--z-elevated);
+  min-height: 48px;
 }
 
 .app-header-title {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
   flex: 1;
+  min-width: 0;
+}
+
+.app-header-title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-header-actions {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
+  flex-shrink: 0;
 }
 
 /* ==========================================
@@ -207,17 +239,17 @@
    ========================================== */
 
 .app-content {
-  padding: var(--spacing-5);
+  padding: var(--spacing-4);
   min-height: 100%;
 }
 
 .app-content-centered {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .app-content-wide {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -229,9 +261,9 @@
   background-color: var(--color-surface);
   border: var(--outline-width) solid var(--outline-color);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-5);
+  padding: var(--spacing-4);
   box-shadow: var(--shadow-md);
-  margin-bottom: var(--spacing-5);
+  margin-bottom: var(--spacing-4);
 }
 
 .section-header {
@@ -239,13 +271,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-3);
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
   padding-bottom: var(--spacing-3);
   border-bottom: var(--outline-width) solid var(--outline-color);
 }
 
 .section-title {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-bold);
   display: flex;
   align-items: center;
@@ -253,34 +285,110 @@
 }
 
 /* ==========================================
-   RESPONSIVE ADJUSTMENTS
+   RESPONSIVE - Larger screens get more space
    ========================================== */
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .status-bar {
-    padding: var(--spacing-2) var(--spacing-4);
-    height: 48px;
-  }
-
-  .app-header {
     padding: var(--spacing-3) var(--spacing-4);
+    height: 48px;
+    min-height: 48px;
   }
 
-  .app-content {
-    padding: var(--spacing-4);
-  }
-
-  .section {
-    padding: var(--spacing-4);
-    border-radius: var(--radius-lg);
+  .status-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   .phone-home-bar {
-    height: 64px;
+    height: 60px;
+    min-height: 60px;
   }
 
   .home-button {
     width: 48px;
     height: 48px;
+  }
+
+  .home-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-header {
+    padding: var(--spacing-4) var(--spacing-5);
+    min-height: 52px;
+  }
+
+  .app-header-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .app-content {
+    padding: var(--spacing-5);
+  }
+
+  .section {
+    padding: var(--spacing-5);
+    border-radius: var(--radius-xl);
+  }
+
+  .section-title {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* ==========================================
+   LANDSCAPE MOBILE
+   ========================================== */
+
+@media (max-height: 500px) {
+  .status-bar {
+    height: 36px;
+    min-height: 36px;
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .phone-home-bar {
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .home-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .app-header {
+    min-height: 40px;
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .app-content {
+    padding: var(--spacing-3);
+  }
+
+  .section {
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+}
+
+/* ==========================================
+   SAFE AREAS for notched devices
+   ========================================== */
+
+@supports (padding: env(safe-area-inset-top)) {
+  .status-bar {
+    padding-top: max(var(--spacing-2), env(safe-area-inset-top));
+  }
+
+  .phone-home-bar {
+    padding-bottom: max(var(--spacing-2), env(safe-area-inset-bottom));
+  }
+
+  .app-content {
+    padding-left: max(var(--spacing-4), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-4), env(safe-area-inset-right));
   }
 }

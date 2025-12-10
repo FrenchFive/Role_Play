@@ -1,16 +1,18 @@
 /* ==========================================
-   HOME SCREEN
+   HOME SCREEN - Responsive Design
    ========================================== */
 
 .home-screen {
   height: 100%;
   width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .home-wallpaper {
   min-height: 100%;
-  padding: var(--spacing-5);
+  padding: var(--spacing-4);
   background-color: var(--color-bg);
 }
 
@@ -21,18 +23,18 @@
 .character-widget {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-5);
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
   background-color: var(--color-surface);
   border: var(--outline-width) solid var(--outline-color);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--spacing-5);
 }
 
 .widget-avatar {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   border: var(--outline-width) solid var(--outline-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -51,7 +53,7 @@
 }
 
 .widget-avatar-placeholder {
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-extrabold);
   color: var(--color-primary);
 }
@@ -62,24 +64,24 @@
 }
 
 .widget-greeting {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
 }
 
 .widget-name {
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   line-height: 1.2;
-  margin: var(--spacing-1) 0;
+  margin: 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .widget-level {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   font-weight: var(--font-weight-semibold);
 }
@@ -89,23 +91,30 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--spacing-1) var(--spacing-2);
   background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-primary) 100%);
   color: white;
   border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
+  font-size: 10px;
   font-weight: var(--font-weight-bold);
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.dm-badge svg {
+  width: 12px;
+  height: 12px;
 }
 
 /* ==========================================
-   APP GRID
+   APP GRID - Auto-fit for all screen sizes
    ========================================== */
 
 .app-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-4);
+  /* Auto-fit columns: min 70px, max 1fr, fits as many as possible */
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: var(--spacing-3);
 }
 
 .app-icon {
@@ -114,14 +123,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3);
+  gap: var(--spacing-1);
+  padding: var(--spacing-2);
   border: var(--outline-width) solid var(--outline-color);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   cursor: pointer;
   box-shadow: var(--shadow-md);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  min-width: 0;
 }
 
 .app-icon:hover {
@@ -130,7 +140,7 @@
 }
 
 .app-icon:active {
-  transform: translate(2px, 2px);
+  transform: translate(1px, 1px);
   box-shadow: var(--shadow-active);
 }
 
@@ -138,25 +148,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
   color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.app-icon-graphic svg {
+  width: 24px;
+  height: 24px;
 }
 
 .app-icon-name {
-  font-size: var(--font-size-xs);
+  font-size: 9px;
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 /* DM-only App Styling */
 .app-icon.dm-only {
   position: relative;
   border-color: var(--color-warning);
-  box-shadow: 0 0 12px rgba(234, 179, 8, 0.3), var(--shadow-md);
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.3), var(--shadow-md);
 }
 
 .app-icon.dm-only .app-icon-graphic {
@@ -169,13 +189,13 @@
 
 .app-dm-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: 2px;
+  right: 2px;
   background: var(--color-bg-base);
   color: var(--color-warning);
-  font-size: 8px;
+  font-size: 7px;
   font-weight: var(--font-weight-bold);
-  padding: 2px 4px;
+  padding: 1px 3px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-warning);
 }
@@ -186,65 +206,47 @@
 
 .no-character-prompt {
   text-align: center;
-  padding: var(--spacing-8);
+  padding: var(--spacing-6);
   background-color: var(--color-surface);
   border: var(--outline-width) solid var(--outline-color);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  margin-top: var(--spacing-6);
+  margin-top: var(--spacing-5);
 }
 
 .prompt-icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-3);
   color: var(--color-text-muted);
 }
 
+.prompt-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
 .no-character-prompt p {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-5);
+  margin-bottom: var(--spacing-4);
 }
 
 /* ==========================================
-   RESPONSIVE
+   RESPONSIVE - Larger screens
    ========================================== */
 
-@media (max-width: 900px) {
+@media (min-width: 400px) {
   .app-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-3);
-  }
-}
-
-@media (max-width: 640px) {
-  .home-wallpaper {
-    padding: var(--spacing-4);
-  }
-
-  .character-widget {
-    padding: var(--spacing-4);
-  }
-
-  .widget-avatar {
-    width: 60px;
-    height: 60px;
-  }
-
-  .widget-name {
-    font-size: var(--font-size-xl);
-  }
-
-  .app-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
     gap: var(--spacing-3);
   }
 
   .app-icon {
-    padding: var(--spacing-2);
+    padding: var(--spacing-3);
+    border-radius: var(--radius-xl);
   }
 
   .app-icon-graphic {
@@ -262,9 +264,149 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (min-width: 500px) {
+  .home-wallpaper {
+    padding: var(--spacing-5);
+  }
+
+  .character-widget {
+    padding: var(--spacing-5);
+    gap: var(--spacing-4);
+  }
+
+  .widget-avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .widget-name {
+    font-size: var(--font-size-xl);
+  }
+
+  .widget-greeting,
+  .widget-level {
+    font-size: var(--font-size-sm);
+  }
+
   .app-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  .app-icon-graphic {
+    width: 40px;
+    height: 40px;
+  }
+
+  .app-icon-graphic svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-icon-name {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 768px) {
+  .character-widget {
+    padding: var(--spacing-5);
+  }
+
+  .widget-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .widget-avatar-placeholder {
+    font-size: var(--font-size-3xl);
+  }
+
+  .widget-name {
+    font-size: var(--font-size-2xl);
+  }
+
+  .dm-badge {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+  }
+
+  .dm-badge svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .app-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .app-icon {
+    padding: var(--spacing-3);
+  }
+
+  .app-icon-graphic {
+    width: 44px;
+    height: 44px;
+  }
+
+  .app-icon-name {
+    font-size: var(--font-size-xs);
+  }
+
+  .no-character-prompt {
+    padding: var(--spacing-8);
+  }
+
+  .prompt-icon svg {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* ==========================================
+   LANDSCAPE MOBILE
+   ========================================== */
+
+@media (max-height: 500px) {
+  .home-wallpaper {
+    padding: var(--spacing-3);
+  }
+
+  .character-widget {
+    padding: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .widget-avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .widget-name {
+    font-size: var(--font-size-base);
+  }
+
+  .app-grid {
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
     gap: var(--spacing-2);
+  }
+
+  .app-icon {
+    padding: var(--spacing-2);
+  }
+
+  .app-icon-graphic {
+    width: 28px;
+    height: 28px;
+  }
+
+  .app-icon-graphic svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-icon-name {
+    font-size: 8px;
   }
 }
