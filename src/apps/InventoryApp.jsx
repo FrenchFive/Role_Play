@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { inventoryDatabase } from '../utils/sharedData';
 import { database } from '../utils/database';
+import { BackpackIcon, PlusIcon, XIcon, TrashIcon, MinusIcon } from '../components/icons/Icons';
 import './InventoryApp.css';
 
 function InventoryApp() {
@@ -88,15 +89,15 @@ function InventoryApp() {
   };
 
   const getTypeIcon = (type) => {
-    const icons = {
-      'Weapon': '⚔️',
-      'Armor': '🛡️',
-      'Consumable': '🧪',
-      'Tool': '🔧',
-      'Quest Item': '📜',
-      'Misc': '📦'
+    const labels = {
+      'Weapon': 'Weapon',
+      'Armor': 'Armor',
+      'Consumable': 'Consumable',
+      'Tool': 'Tool',
+      'Quest Item': 'Quest',
+      'Misc': 'Misc'
     };
-    return icons[type] || '📦';
+    return labels[type] || 'Misc';
   };
 
   const getRarityClass = (rarity) => {
@@ -120,9 +121,9 @@ function InventoryApp() {
   return (
     <div className="inventory-app">
       <div className="inventory-header">
-        <h1>🎒 Inventory</h1>
+        <h1><BackpackIcon size={32} /> Inventory</h1>
         <button className="btn-add-item" onClick={() => setShowAddForm(!showAddForm)}>
-          {showAddForm ? '✖ Cancel' : '➕ Add Item'}
+          {showAddForm ? <><XIcon size={16} /> Cancel</> : <><PlusIcon size={16} /> Add Item</>}
         </button>
       </div>
 
@@ -220,7 +221,7 @@ function InventoryApp() {
             />
           </div>
 
-          <button type="submit" className="btn-submit">💾 Add to Inventory</button>
+          <button type="submit" className="btn-submit">Add to Inventory</button>
         </form>
       )}
 
@@ -232,7 +233,7 @@ function InventoryApp() {
               className={`category-tab ${selectedCategory === cat ? 'active' : ''}`}
               onClick={() => setSelectedCategory(cat)}
             >
-              {cat === 'All' ? '📋' : getTypeIcon(cat)} {cat}
+              {cat}
             </button>
           ))}
         </div>
@@ -240,7 +241,7 @@ function InventoryApp() {
         <div className="search-box">
           <input
             type="text"
-            placeholder="🔍 Search items..."
+            placeholder="Search items..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -250,7 +251,7 @@ function InventoryApp() {
       <div className="item-grid">
         {filteredItems.length === 0 ? (
           <div className="empty-state">
-            <p>📦 No items found</p>
+            <p>No items found</p>
             <p className="empty-subtitle">
               {items.length === 0 ? 'Add items to your inventory' : 'Try a different filter or search'}
             </p>
@@ -288,7 +289,7 @@ function InventoryApp() {
                   onClick={() => handleQuantityChange(item, -1)}
                   title="Decrease quantity"
                 >
-                  −
+                  <MinusIcon size={14} />
                 </button>
                 <span className="quantity-display">{item.quantity}</span>
                 <button
@@ -296,14 +297,14 @@ function InventoryApp() {
                   onClick={() => handleQuantityChange(item, 1)}
                   title="Increase quantity"
                 >
-                  +
+                  <PlusIcon size={14} />
                 </button>
                 <button
                   className="btn-delete-item"
                   onClick={() => handleDeleteItem(item.id)}
                   title="Delete item"
                 >
-                  🗑️
+                  <TrashIcon size={16} />
                 </button>
               </div>
             </div>

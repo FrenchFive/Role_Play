@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import { mapDatabase } from '../utils/sharedData';
 import { wsClient } from '../utils/websocket';
 import { database } from '../utils/database';
+import { MapIcon, PlusIcon, XIcon, TrashIcon, CheckIcon } from '../components/icons/Icons';
 import 'leaflet/dist/leaflet.css';
 import './MapApp.css';
 
@@ -117,20 +118,20 @@ export default function MapApp() {
   return (
     <div className="map-app">
       <div className="map-header">
-        <h1>🗺️ Map</h1>
+        <h1><MapIcon size={32} /> Map</h1>
         <div className="map-controls">
           {!isAddingPin ? (
             <button
               className="btn-add-pin"
               onClick={() => setIsAddingPin(true)}
             >
-              📍 Add Pin
+              <PlusIcon size={16} /> Add Pin
             </button>
           ) : (
             <div className="adding-mode">
               <span>Click on map to place pin</span>
               <button className="btn-cancel-add" onClick={handleCancelAddPin}>
-                ❌ Cancel
+                <XIcon size={16} /> Cancel
               </button>
             </div>
           )}
@@ -192,7 +193,7 @@ export default function MapApp() {
             />
           ) : (
             <div className="map-info">
-              <h3>📍 Shared Map</h3>
+              <h3>Shared Map</h3>
               <p>
                 This map is synchronized with all party members. Add pins to mark
                 important locations, quest objectives, or points of interest.
@@ -254,7 +255,7 @@ function PinForm({ onSave, onCancel }) {
 
   return (
     <div className="pin-form">
-      <h3>📍 New Pin</h3>
+      <h3>New Pin</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-field">
           <label>Name *</label>
@@ -270,12 +271,12 @@ function PinForm({ onSave, onCancel }) {
         <div className="form-field">
           <label>Category</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
-            <option value="location">📍 Location</option>
-            <option value="quest">✅ Quest</option>
-            <option value="danger">⚠️ Danger</option>
-            <option value="safe">🛡️ Safe Zone</option>
-            <option value="resource">💎 Resource</option>
-            <option value="other">🔵 Other</option>
+            <option value="location">Location</option>
+            <option value="quest">Quest</option>
+            <option value="danger">Danger</option>
+            <option value="safe">Safe Zone</option>
+            <option value="resource">Resource</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
@@ -291,10 +292,10 @@ function PinForm({ onSave, onCancel }) {
 
         <div className="form-actions">
           <button type="submit" className="btn-save">
-            💾 Save Pin
+            <CheckIcon size={16} /> Save Pin
           </button>
           <button type="button" className="btn-cancel" onClick={onCancel}>
-            ❌ Cancel
+            <XIcon size={16} /> Cancel
           </button>
         </div>
       </form>
@@ -318,23 +319,23 @@ function PinDetails({ pin, onUpdate, onDelete, onClose }) {
     setIsEditing(false);
   };
 
-  const categoryIcons = {
-    location: '📍',
-    quest: '✅',
-    danger: '⚠️',
-    safe: '🛡️',
-    resource: '💎',
-    other: '🔵'
+  const categoryLabels = {
+    location: 'Location',
+    quest: 'Quest',
+    danger: 'Danger',
+    safe: 'Safe Zone',
+    resource: 'Resource',
+    other: 'Other'
   };
 
   return (
     <div className="pin-details">
       <div className="pin-details-header">
         <h3>
-          {categoryIcons[pin.category] || '📍'} {pin.name}
+          {categoryLabels[pin.category] || 'Location'} - {pin.name}
         </h3>
         <button className="btn-close" onClick={onClose}>
-          ✕
+          <XIcon size={16} />
         </button>
       </div>
 
@@ -352,12 +353,12 @@ function PinDetails({ pin, onUpdate, onDelete, onClose }) {
           <div className="form-field">
             <label>Category</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}>
-              <option value="location">📍 Location</option>
-              <option value="quest">✅ Quest</option>
-              <option value="danger">⚠️ Danger</option>
-              <option value="safe">🛡️ Safe Zone</option>
-              <option value="resource">💎 Resource</option>
-              <option value="other">🔵 Other</option>
+              <option value="location">Location</option>
+              <option value="quest">Quest</option>
+              <option value="danger">Danger</option>
+              <option value="safe">Safe Zone</option>
+              <option value="resource">Resource</option>
+              <option value="other">Other</option>
             </select>
           </div>
 
@@ -372,19 +373,19 @@ function PinDetails({ pin, onUpdate, onDelete, onClose }) {
 
           <div className="form-actions">
             <button className="btn-save" onClick={handleUpdate}>
-              💾 Save
+              <CheckIcon size={16} /> Save
             </button>
             <button className="btn-cancel" onClick={() => setIsEditing(false)}>
-              ❌ Cancel
+              <XIcon size={16} /> Cancel
             </button>
           </div>
         </div>
       ) : (
         <div className="pin-view">
           <div className="pin-meta">
-            <span>📍 {pin.lat.toFixed(5)}, {pin.lng.toFixed(5)}</span>
-            <span>👤 {pin.author}</span>
-            <span>🕒 {new Date(pin.updatedAt).toLocaleString()}</span>
+            <span>Coords: {pin.lat.toFixed(5)}, {pin.lng.toFixed(5)}</span>
+            <span>By: {pin.author}</span>
+            <span>Updated: {new Date(pin.updatedAt).toLocaleString()}</span>
           </div>
 
           {pin.description && (
@@ -396,10 +397,10 @@ function PinDetails({ pin, onUpdate, onDelete, onClose }) {
 
           <div className="pin-actions">
             <button className="btn-edit" onClick={() => setIsEditing(true)}>
-              ✏️ Edit
+              <EditIcon size={16} /> Edit
             </button>
             <button className="btn-delete" onClick={() => onDelete(pin.id)}>
-              🗑️ Delete
+              <TrashIcon size={16} /> Delete
             </button>
           </div>
         </div>

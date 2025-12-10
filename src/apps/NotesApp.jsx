@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { notesDatabase } from '../utils/sharedData';
 import { database } from '../utils/database';
+import { NotesIcon, PlusIcon, EditIcon, TrashIcon, CheckIcon, XIcon } from '../components/icons/Icons';
 import './NotesApp.css';
 
 function NotesApp() {
@@ -77,8 +78,8 @@ function NotesApp() {
     <div className="notes-app">
       <div className="notes-sidebar">
         <div className="notes-header">
-          <h2>📝 Notes</h2>
-          <button className="btn-new-note" onClick={handleNewNote}>➕ New</button>
+          <h2><NotesIcon size={24} /> Notes</h2>
+          <button className="btn-new-note" onClick={handleNewNote}><PlusIcon size={16} /> New</button>
         </div>
 
         <div className="notes-list">
@@ -111,19 +112,19 @@ function NotesApp() {
       <div className="notes-main">
         {!selectedNote && !isEditing ? (
           <div className="notes-empty-main">
-            <p>📝 Select a note or create a new one</p>
+            <p>Select a note or create a new one</p>
           </div>
         ) : (
           <>
             <div className="notes-toolbar">
               {!isEditing ? (
                 <>
-                  <button className="btn-edit" onClick={() => setIsEditing(true)}>✏️ Edit</button>
-                  <button className="btn-delete" onClick={handleDelete}>🗑️ Delete</button>
+                  <button className="btn-edit" onClick={() => setIsEditing(true)}><EditIcon size={16} /> Edit</button>
+                  <button className="btn-delete" onClick={handleDelete}><TrashIcon size={16} /> Delete</button>
                 </>
               ) : (
                 <>
-                  <button className="btn-save" onClick={handleSave}>💾 Save</button>
+                  <button className="btn-save" onClick={handleSave}><CheckIcon size={16} /> Save</button>
                   <button className="btn-cancel" onClick={() => {
                     if (selectedNote) {
                       handleSelectNote(selectedNote);
@@ -132,7 +133,7 @@ function NotesApp() {
                       setTitle('');
                       setContent('');
                     }
-                  }}>✖ Cancel</button>
+                  }}><XIcon size={16} /> Cancel</button>
                 </>
               )}
             </div>
