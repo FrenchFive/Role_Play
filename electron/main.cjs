@@ -2,6 +2,20 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+// Auto-updater (only in production)
+let autoUpdater = null;
+let log = null;
+
+if (app.isPackaged) {
+  try {
+    const { autoUpdater: updater } = require('electron-updater');
+    autoUpdater = updater;
+    log = require('electron-log');
+  } catch (e) {
+    console.error('Failed to load auto-updater:', e);
+  }
+}
+
 let mainWindow;
 let serverConfig = {
   serverIp: '',
@@ -42,7 +56,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs')
     },
     icon: path.join(__dirname, '../public/icon.png'),
-    title: 'Hunters RPG'
+    title: 'S0LSTICE_OS'
   });
 
   // Load the app
@@ -58,9 +72,71 @@ function createWindow() {
   });
 }
 
+// ============================================
+// AUTO-UPDATER SETUP
+// ============================================
+
+function setupAutoUpdater() {
+  if (!autoUpdater) {
+    console.log('Auto-updater not available (development mode)');
+    return;
+  }
+
+  // Configure auto-updater
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  // Set up logging
+  if (log) {
+    autoUpdater.logger = log;
+    autoUpdater.logger.transports.file.level = 'info';
+  }
+
+  // Update events
+  autoUpdater.on('checking-for-update', () => {
+    sendUpdateStatus('checking', 'Checking for updates...');
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    sendUpdateStatus('available', `Version ${info.version} is available!`, info);
+  });
+
+  autoUpdater.on('update-not-available', (info) => {
+    sendUpdateStatus('not-available', 'You have the latest version!', info);
+  });
+
+  autoUpdater.on('error', (err) => {
+    sendUpdateStatus('error', `Update error: ${err.message}`, { error: err.message });
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    sendUpdateStatus('downloading', `Downloading: ${Math.round(progress.percent)}%`, {
+      percent: progress.percent,
+      transferred: progress.transferred,
+      total: progress.total,
+      bytesPerSecond: progress.bytesPerSecond
+    });
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    sendUpdateStatus('downloaded', `Version ${info.version} is ready to install!`, info);
+  });
+}
+
+function sendUpdateStatus(status, message, data = {}) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', { status, message, ...data });
+  }
+}
+
+// ============================================
+// APP LIFECYCLE
+// ============================================
+
 app.whenReady().then(() => {
   loadServerConfig();
   createWindow();
+  setupAutoUpdater();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -75,7 +151,10 @@ app.on('window-all-closed', () => {
   }
 });
 
-// IPC handlers for server configuration
+// ============================================
+// IPC HANDLERS - Server Configuration
+// ============================================
+
 ipcMain.handle('get-server-config', () => {
   return serverConfig;
 });
@@ -86,7 +165,10 @@ ipcMain.handle('set-server-config', (event, config) => {
   return serverConfig;
 });
 
-// IPC handler for file operations (import/export characters)
+// ============================================
+// IPC HANDLERS - File Operations
+// ============================================
+
 ipcMain.handle('save-file', async (event, { data, defaultPath }) => {
   const result = await dialog.showSaveDialog(mainWindow, {
     defaultPath,
@@ -125,4 +207,52 @@ ipcMain.handle('open-file', async () => {
     }
   }
   return { success: false, canceled: true };
+});
+
+// ============================================
+// IPC HANDLERS - Auto-Updater
+// ============================================
+
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion();
+});
+
+ipcMain.handle('check-for-updates', async () => {
+  if (!autoUpdater) {
+    return { 
+      success: false, 
+      error: 'Auto-updater not available in development mode',
+      isDev: true
+    };
+  }
+  
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    return { success: true, result };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('download-update', async () => {
+  if (!autoUpdater) {
+    return { success: false, error: 'Auto-updater not available' };
+  }
+  
+  try {
+    await autoUpdater.downloadUpdate();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('install-update', () => {
+  if (!autoUpdater) {
+    return { success: false, error: 'Auto-updater not available' };
+  }
+  
+  // This will quit the app and install the update
+  autoUpdater.quitAndInstall(false, true);
+  return { success: true };
 });

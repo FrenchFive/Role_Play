@@ -9,11 +9,36 @@ import {
 } from '../components/icons/Icons';
 import './Settings.css';
 
+// Download icon component
+const DownloadIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+);
+
+// Refresh icon component
+const RefreshIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 4 23 10 17 10" />
+    <polyline points="1 20 1 14 7 14" />
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+  </svg>
+);
+
 function Settings({ currentCharacter, onClose }) {
   const [serverUrl, setServerUrl] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('');
   const [connectedUsers, setConnectedUsers] = useState([]);
+  
+  // Update states
+  const [appVersion, setAppVersion] = useState('');
+  const [updateStatus, setUpdateStatus] = useState('idle'); // idle, checking, available, not-available, downloading, downloaded, error
+  const [updateMessage, setUpdateMessage] = useState('');
+  const [updateInfo, setUpdateInfo] = useState(null);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const handleConnected = () => {
     setIsConnected(true);
@@ -51,6 +76,29 @@ function Settings({ currentCharacter, onClose }) {
           setServerUrl(config.serverIp);
         }
       });
+      
+      // Get app version
+      window.electronAPI.getAppVersion().then(version => {
+        setAppVersion(version);
+      });
+      
+      // Listen for update status events
+      const cleanup = window.electronAPI.onUpdateStatus((data) => {
+        setUpdateStatus(data.status);
+        setUpdateMessage(data.message);
+        
+        if (data.status === 'available' || data.status === 'not-available' || data.status === 'downloaded') {
+          setUpdateInfo(data);
+        }
+        
+        if (data.status === 'downloading' && data.percent !== undefined) {
+          setDownloadProgress(data.percent);
+        }
+      });
+      
+      return () => {
+        if (cleanup) cleanup();
+      };
     } else {
       // Web version - use localStorage
       const savedUrl = localStorage.getItem('server_url');
@@ -102,6 +150,53 @@ function Settings({ currentCharacter, onClose }) {
 
   const handleDisconnect = () => {
     wsClient.disconnect();
+  };
+
+  // Update handlers
+  const handleCheckForUpdates = async () => {
+    if (!window.electronAPI) return;
+    
+    setUpdateStatus('checking');
+    setUpdateMessage('Checking for updates...');
+    
+    const result = await window.electronAPI.checkForUpdates();
+    
+    if (!result.success) {
+      if (result.isDev) {
+        setUpdateStatus('error');
+        setUpdateMessage('Updates are only available in the installed app');
+      } else {
+        setUpdateStatus('error');
+        setUpdateMessage(result.error || 'Failed to check for updates');
+      }
+    }
+  };
+
+  const handleDownloadUpdate = async () => {
+    if (!window.electronAPI) return;
+    
+    setUpdateStatus('downloading');
+    setDownloadProgress(0);
+    
+    const result = await window.electronAPI.downloadUpdate();
+    
+    if (!result.success) {
+      setUpdateStatus('error');
+      setUpdateMessage(result.error || 'Failed to download update');
+    }
+  };
+
+  const handleInstallUpdate = async () => {
+    if (!window.electronAPI) return;
+    
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      'The app will close and restart to install the update. Continue?'
+    );
+    
+    if (confirmed) {
+      await window.electronAPI.installUpdate();
+    }
   };
 
   const handleExportCharacter = async () => {
@@ -211,6 +306,20 @@ function Settings({ currentCharacter, onClose }) {
     }
   };
 
+  const getUpdateStatusColor = () => {
+    switch (updateStatus) {
+      case 'available':
+      case 'downloaded':
+        return 'var(--color-success-light)';
+      case 'error':
+        return 'var(--color-danger-light)';
+      case 'downloading':
+        return 'var(--color-info-light)';
+      default:
+        return 'var(--color-bg-sunken)';
+    }
+  };
+
   return (
     <div className="settings-page">
       <div className="settings-header">
@@ -221,6 +330,89 @@ function Settings({ currentCharacter, onClose }) {
       </div>
 
       <div className="settings-content">
+        {/* App Updates - Only show in Electron */}
+        {window.electronAPI && (
+          <div className="card card-static">
+            <div className="card-header"><DownloadIcon size={24} /> App Updates</div>
+            
+            <div className="update-section">
+              <div className="update-info">
+                <p><strong>Current Version:</strong> {appVersion || 'Loading...'}</p>
+                
+                {updateStatus !== 'idle' && (
+                  <div 
+                    className="update-status-box"
+                    style={{ backgroundColor: getUpdateStatusColor() }}
+                  >
+                    <p className="update-message">{updateMessage}</p>
+                    
+                    {updateStatus === 'downloading' && (
+                      <div className="download-progress">
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-fill" 
+                            style={{ width: `${downloadProgress}%` }}
+                          />
+                        </div>
+                        <span className="progress-text">{Math.round(downloadProgress)}%</span>
+                      </div>
+                    )}
+                    
+                    {updateInfo?.version && updateStatus === 'available' && (
+                      <p className="update-version">New version: {updateInfo.version}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              <div className="update-actions">
+                {(updateStatus === 'idle' || updateStatus === 'not-available' || updateStatus === 'error') && (
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleCheckForUpdates}
+                  >
+                    <RefreshIcon size={16} /> Check for Updates
+                  </button>
+                )}
+                
+                {updateStatus === 'checking' && (
+                  <button className="btn btn-outline" disabled>
+                    <span className="spinner" /> Checking...
+                  </button>
+                )}
+                
+                {updateStatus === 'available' && (
+                  <button 
+                    className="btn btn-success" 
+                    onClick={handleDownloadUpdate}
+                  >
+                    <DownloadIcon size={16} /> Download Update
+                  </button>
+                )}
+                
+                {updateStatus === 'downloading' && (
+                  <button className="btn btn-outline" disabled>
+                    Downloading...
+                  </button>
+                )}
+                
+                {updateStatus === 'downloaded' && (
+                  <button 
+                    className="btn btn-success" 
+                    onClick={handleInstallUpdate}
+                  >
+                    Install & Restart
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <p className="help-text">
+              Updates are downloaded from GitHub releases automatically.
+            </p>
+          </div>
+        )}
+
         {/* Server Connection */}
         <div className="card card-static">
           <div className="card-header"><WifiIcon size={24} /> Multiplayer Server</div>
@@ -289,7 +481,7 @@ function Settings({ currentCharacter, onClose }) {
               Export Current Character
             </button>
             
-            <button className="btn btn-accent" onClick={handleExportAllCharacters}>
+            <button className="btn btn-outline" onClick={handleExportAllCharacters}>
               Export All Characters
             </button>
           </div>
@@ -302,8 +494,8 @@ function Settings({ currentCharacter, onClose }) {
         {/* About */}
         <div className="card card-static">
           <div className="card-header">About</div>
-          <p><strong>Hunters RPG</strong> - Character Management App</p>
-          <p>Version: 1.0.0</p>
+          <p><strong>S0LSTICE_OS</strong> - Your Hunter&apos;s Digital Companion</p>
+          <p>Version: {appVersion || '1.0.0'}</p>
           {window.electronAPI && (
             <p>Platform: {window.electronAPI.platform}</p>
           )}
