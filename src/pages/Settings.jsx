@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { database } from '../utils/database';
 import { wsClient } from '../utils/websocket';
+import {
+  SettingsIcon,
+  WifiIcon,
+  UsersIcon,
+  ArrowLeftIcon,
+} from '../components/icons/Icons';
 import './Settings.css';
 
 function Settings({ currentCharacter, onClose }) {
@@ -208,16 +214,16 @@ function Settings({ currentCharacter, onClose }) {
   return (
     <div className="settings-page">
       <div className="settings-header">
-        <h1>⚙️ Settings</h1>
+        <h1><SettingsIcon size={32} /> Settings</h1>
         <button className="btn btn-secondary" onClick={onClose}>
-          ← Back
+          <ArrowLeftIcon size={16} /> Back
         </button>
       </div>
 
       <div className="settings-content">
         {/* Server Connection */}
-        <div className="card">
-          <div className="card-header">🌐 Multiplayer Server</div>
+        <div className="card card-static">
+          <div className="card-header"><WifiIcon size={24} /> Multiplayer Server</div>
           
           <div className="form-group">
             <label>Server URL (WebSocket)</label>
@@ -237,11 +243,11 @@ function Settings({ currentCharacter, onClose }) {
           <div className="connection-actions">
             {!isConnected ? (
               <button className="btn btn-success" onClick={handleConnect}>
-                🔌 Connect to Server
+                Connect to Server
               </button>
             ) : (
               <button className="btn btn-danger" onClick={handleDisconnect}>
-                🔌 Disconnect
+                Disconnect
               </button>
             )}
           </div>
@@ -254,7 +260,7 @@ function Settings({ currentCharacter, onClose }) {
 
           {isConnected && connectedUsers.length > 0 && (
             <div className="connected-users">
-              <h4>🎮 Connected Players:</h4>
+              <h4><UsersIcon size={18} /> Connected Players:</h4>
               <ul>
                 {connectedUsers.map(user => (
                   <li key={user.id}>
@@ -267,12 +273,12 @@ function Settings({ currentCharacter, onClose }) {
         </div>
 
         {/* Import/Export */}
-        <div className="card">
-          <div className="card-header">📦 Import / Export Characters</div>
+        <div className="card card-static">
+          <div className="card-header">Import / Export Characters</div>
           
           <div className="import-export-actions">
             <button className="btn btn-primary" onClick={handleImportCharacter}>
-              📥 Import Character(s)
+              Import Character(s)
             </button>
             
             <button 
@@ -280,11 +286,11 @@ function Settings({ currentCharacter, onClose }) {
               onClick={handleExportCharacter}
               disabled={!currentCharacter}
             >
-              📤 Export Current Character
+              Export Current Character
             </button>
             
             <button className="btn btn-accent" onClick={handleExportAllCharacters}>
-              📤 Export All Characters
+              Export All Characters
             </button>
           </div>
 
@@ -294,8 +300,8 @@ function Settings({ currentCharacter, onClose }) {
         </div>
 
         {/* About */}
-        <div className="card">
-          <div className="card-header">ℹ️ About</div>
+        <div className="card card-static">
+          <div className="card-header">About</div>
           <p><strong>Hunters RPG</strong> - Character Management App</p>
           <p>Version: 1.0.0</p>
           {window.electronAPI && (

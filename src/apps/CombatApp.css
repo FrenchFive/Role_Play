@@ -1,58 +1,74 @@
 .combat-app {
-  padding: 20px;
+  padding: var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .combat-header {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .combat-header h1 {
   margin: 0;
-  font-size: 36px;
+  font-size: var(--font-size-3xl);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
 }
 
 .combat-placeholder {
   text-align: center;
-  padding: 60px 40px;
-  background: linear-gradient(135deg, #FFB3BA 0%, #BAE1FF 100%);
-  border: 4px solid #000;
-  border-radius: 16px;
-  box-shadow: 8px 8px 0 #000;
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  background: var(--pastel-blush);
+  border: var(--outline-width) solid var(--outline-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-offset-lg);
 }
 
 .placeholder-icon {
-  font-size: 80px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
 }
 
 .combat-placeholder h2 {
-  font-size: 32px;
-  margin: 0 0 20px 0;
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--spacing-xl) 0;
+  font-weight: var(--font-weight-bold);
 }
 
 .placeholder-text {
-  font-size: 18px;
-  margin: 15px 0;
-  color: #333;
+  font-size: var(--font-size-lg);
+  margin: var(--spacing-md) 0;
+  color: var(--color-text-secondary);
 }
 
 .feature-list {
   list-style: none;
   padding: 0;
-  margin: 30px 0 0 0;
+  margin: var(--spacing-2xl) 0 0 0;
   text-align: left;
   display: inline-block;
 }
 
 .feature-list li {
-  font-size: 18px;
-  padding: 10px 0;
-  border-bottom: 2px solid rgba(0,0,0,0.1);
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-md) 0;
+  border-bottom: 2px solid var(--color-border-light);
+  font-weight: var(--font-weight-medium);
 }
 
 .feature-list li:last-child {
   border-bottom: none;
+}
+
+.feature-list li::before {
+  content: "•";
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  margin-right: var(--spacing-sm);
 }

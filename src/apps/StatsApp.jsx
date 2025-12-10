@@ -3,6 +3,7 @@ import './StatsApp.css';
 import { database as db } from '../utils/database';
 import * as dice from '../utils/dice';
 import { wsClient } from '../utils/websocket';
+import { ChartIcon, DiceIcon } from '../components/icons/Icons';
 
 export default function StatsApp() {
   const [character, setCharacter] = useState(null);
@@ -137,7 +138,7 @@ export default function StatsApp() {
   return (
     <div className="stats-app">
       <div className="stats-header">
-        <h2>📊 Stats & Dice Roller</h2>
+        <h2><ChartIcon size={28} /> Stats & Dice Roller</h2>
         <div className="character-name">{character.name}</div>
       </div>
 
@@ -204,16 +205,16 @@ export default function StatsApp() {
             <div className="stat-modifier">{formatModifier(getModifier(character.stats.cha))}</div>
           </div>
         </div>
-        <div className="stats-hint">💡 Right-click to remove bonus</div>
+        <div className="stats-hint">Right-click to remove bonus</div>
       </div>
 
       <div className="dice-section">
         <h3>Dice Selection (Click to add, Right-click to remove)</h3>
         <div className="dice-buttons">
-          <button onClick={() => handleDiceClick(6)} className="btn-dice">🎲 D6</button>
-          <button onClick={() => handleDiceClick(10)} className="btn-dice">🎲 D10</button>
-          <button onClick={() => handleDiceClick(20)} className="btn-dice">🎲 D20</button>
-          <button onClick={() => handleDiceClick(100)} className="btn-dice">🎲 D100</button>
+          <button onClick={() => handleDiceClick(6)} className="btn-dice"><DiceIcon size={18} /> D6</button>
+          <button onClick={() => handleDiceClick(10)} className="btn-dice"><DiceIcon size={18} /> D10</button>
+          <button onClick={() => handleDiceClick(20)} className="btn-dice"><DiceIcon size={18} /> D20</button>
+          <button onClick={() => handleDiceClick(100)} className="btn-dice"><DiceIcon size={18} /> D100</button>
         </div>
 
         <div className="selected-dice">
@@ -228,7 +229,7 @@ export default function StatsApp() {
                   className="dice-chip"
                   onContextMenu={(e) => handleDiceRightClick(e, index)}
                 >
-                  🎲 D{d}
+                  D{d}
                 </div>
               ))}
             </div>
@@ -258,7 +259,7 @@ export default function StatsApp() {
           className="btn-roll"
           disabled={selectedDice.length === 0}
         >
-          🎲 Roll Dice
+          <DiceIcon size={20} /> Roll Dice
         </button>
       </div>
 

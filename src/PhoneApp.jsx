@@ -22,13 +22,16 @@ import PetsApp from './apps/PetsApp';
 import NotesApp from './apps/NotesApp';
 import CombatApp from './apps/CombatApp';
 
+// Import icons
+import { UserIcon, WalletIcon, ArrowLeftIcon } from './components/icons/Icons';
+
 // Placeholder for new apps (to be implemented)
 const PlaceholderApp = ({ appName, onBack }) => (
   <div style={{ padding: '20px', textAlign: 'center' }}>
-    <h2>📱 {appName}</h2>
+    <h2>{appName}</h2>
     <p>This app is coming soon!</p>
     <button className="btn btn-secondary" onClick={onBack}>
-      ← Back to Home
+      <ArrowLeftIcon size={16} /> Back to Home
     </button>
   </div>
 );
@@ -86,10 +89,13 @@ function PhoneApp() {
         if (!currentCharacter) {
           return (
             <div style={{ padding: '20px', textAlign: 'center' }}>
-              <h2>💰 Bank</h2>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px' }}>
+                <WalletIcon size={28} />
+                <h2 style={{ margin: 0 }}>Bank</h2>
+              </div>
               <p>Please select a character first</p>
               <button className="btn btn-primary" onClick={() => handleAppOpen('character')}>
-                Select Character
+                <UserIcon size={16} /> Select Character
               </button>
             </div>
           );

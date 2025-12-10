@@ -1,22 +1,38 @@
 import { useState, useEffect } from 'react';
 import { database } from '../utils/database';
+import {
+  UserIcon,
+  UsersIcon,
+  BookIcon,
+  IdCardIcon,
+  PhoneIcon,
+  ChartIcon,
+  ChecklistIcon,
+  MapIcon,
+  BackpackIcon,
+  SwordsIcon,
+  PawIcon,
+  WalletIcon,
+  NotesIcon,
+  SettingsIcon,
+} from '../components/icons/Icons';
 import './HomeScreen.css';
 
 const APPS = [
-  { id: 'character', name: 'Character', icon: '👤', color: '#FFB3BA' },
-  { id: 'friends', name: 'Friends', icon: '👥', color: '#BAFFC9' },
-  { id: 'codex', name: 'Codex', icon: '📖', color: '#D4BAFF' },
-  { id: 'id', name: 'ID Card', icon: '🪪', color: '#BAE1FF' },
-  { id: 'contacts', name: 'Contacts', icon: '📞', color: '#C9E4DE' },
-  { id: 'stats', name: 'Stats', icon: '📊', color: '#E0BBE4' },
-  { id: 'quest', name: 'Quests', icon: '✅', color: '#FFFFBA' },
-  { id: 'map', name: 'Map', icon: '🗺️', color: '#FFB3E6' },
-  { id: 'inventory', name: 'Inventory', icon: '🎒', color: '#FFDFBA' },
-  { id: 'combat', name: 'Combat', icon: '⚔️', color: '#FF9AA2' },
-  { id: 'pets', name: 'Pets', icon: '🐾', color: '#A2D5F2' },
-  { id: 'bank', name: 'Bank', icon: '💰', color: '#BAE1FF' },
-  { id: 'notes', name: 'Notes', icon: '📝', color: '#FFFFBA' },
-  { id: 'settings', name: 'Settings', icon: '⚙️', color: '#D4BAFF' }
+  { id: 'character', name: 'Character', icon: UserIcon, color: 'var(--pastel-blush)' },
+  { id: 'friends', name: 'Friends', icon: UsersIcon, color: 'var(--pastel-mint)' },
+  { id: 'codex', name: 'Codex', icon: BookIcon, color: 'var(--pastel-lavender)' },
+  { id: 'id', name: 'ID Card', icon: IdCardIcon, color: 'var(--pastel-sky)' },
+  { id: 'contacts', name: 'Contacts', icon: PhoneIcon, color: 'var(--pastel-sage)' },
+  { id: 'stats', name: 'Stats', icon: ChartIcon, color: 'var(--pastel-peach)' },
+  { id: 'quest', name: 'Quests', icon: ChecklistIcon, color: 'var(--pastel-cream)' },
+  { id: 'map', name: 'Map', icon: MapIcon, color: 'var(--pastel-lavender)' },
+  { id: 'inventory', name: 'Inventory', icon: BackpackIcon, color: 'var(--pastel-peach)' },
+  { id: 'combat', name: 'Combat', icon: SwordsIcon, color: 'var(--pastel-blush)' },
+  { id: 'pets', name: 'Pets', icon: PawIcon, color: 'var(--pastel-sky)' },
+  { id: 'bank', name: 'Bank', icon: WalletIcon, color: 'var(--pastel-mint)' },
+  { id: 'notes', name: 'Notes', icon: NotesIcon, color: 'var(--pastel-cream)' },
+  { id: 'settings', name: 'Settings', icon: SettingsIcon, color: 'var(--pastel-slate)' }
 ];
 
 function HomeScreen({ onAppOpen }) {
@@ -60,23 +76,30 @@ function HomeScreen({ onAppOpen }) {
 
         {/* App Grid */}
         <div className="app-grid">
-          {APPS.map(app => (
-            <button
-              key={app.id}
-              className="app-icon"
-              style={{ backgroundColor: app.color }}
-              onClick={() => onAppOpen(app.id)}
-            >
-              <div className="app-icon-emoji">{app.icon}</div>
-              <div className="app-icon-name">{app.name}</div>
-            </button>
-          ))}
+          {APPS.map(app => {
+            const IconComponent = app.icon;
+            return (
+              <button
+                key={app.id}
+                className="app-icon"
+                style={{ backgroundColor: app.color }}
+                onClick={() => onAppOpen(app.id)}
+              >
+                <div className="app-icon-graphic">
+                  <IconComponent size={32} />
+                </div>
+                <div className="app-icon-name">{app.name}</div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Quick Actions */}
         {!character && (
           <div className="no-character-prompt">
-            <div className="prompt-icon">👤</div>
+            <div className="prompt-icon">
+              <UserIcon size={64} />
+            </div>
             <p>No character selected</p>
             <button 
               className="btn btn-success"
