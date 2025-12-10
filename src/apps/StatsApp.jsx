@@ -205,7 +205,7 @@ export default function StatsApp() {
             <div className="stat-modifier">{formatModifier(getModifier(character.stats.cha))}</div>
           </div>
         </div>
-        <div className="stats-hint">Right-click to remove bonus</div>
+        <div className="stats-hint">Right-click stat boxes to remove bonus</div>
       </div>
 
       <div className="dice-section">
