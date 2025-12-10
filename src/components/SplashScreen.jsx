@@ -84,7 +84,9 @@ function SplashScreen({ onComplete, minimumDuration = 2000 }) {
 
         {/* Title */}
         <div className={`splash-title ${phase === 'text' ? 'visible' : ''}`}>
-          <h1>S0LSTICE</h1>
+          <h1>
+            S<span className="zero-slash">0</span>LSTICE
+          </h1>
           <p className="splash-subtitle">_OS</p>
         </div>
 

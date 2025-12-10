@@ -120,23 +120,46 @@
 }
 
 .splash-title h1 {
+  font-family: var(--font-display);
   font-size: 48px;
-  font-weight: var(--font-weight-extrabold);
+  font-weight: 900;
   color: white;
   margin: 0;
   letter-spacing: 4px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Slashed zero to distinguish from O */
+.splash-title h1 .zero-slash {
+  position: relative;
+  display: inline-block;
+}
+
+.splash-title h1 .zero-slash::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 4px;
+  height: 80%;
+  background: var(--color-warning);
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(-20deg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .splash-subtitle {
+  font-family: var(--font-display);
   font-size: 32px;
-  font-weight: var(--font-weight-bold);
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
   margin: 0;
 }
 
 .splash-tagline {
+  font-family: var(--font-display);
   font-size: var(--font-size-lg);
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   opacity: 0;
@@ -207,6 +230,10 @@
   .splash-title h1 {
     font-size: 36px;
     letter-spacing: 2px;
+  }
+
+  .splash-title h1 .zero-slash::before {
+    width: 3px;
   }
 
   .splash-subtitle {
