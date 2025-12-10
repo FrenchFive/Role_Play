@@ -220,9 +220,9 @@ class WebSocketClient {
   }
 
   // Sync quest
-  syncQuest(quest) {
+  syncQuest(quest, action = 'update') {
     if (!this.connected) return;
-    this.send({ type: 'quest_update', quest });
+    this.send({ type: 'quest_sync', quest, action });
   }
 
   // Sync map pins

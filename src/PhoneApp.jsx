@@ -16,6 +16,11 @@ import MapApp from './apps/MapApp';
 import IDCardApp from './apps/IDCardApp';
 import ContactsApp from './apps/ContactsApp';
 import StatsApp from './apps/StatsApp';
+import QuestApp from './apps/QuestApp';
+import InventoryApp from './apps/InventoryApp';
+import PetsApp from './apps/PetsApp';
+import NotesApp from './apps/NotesApp';
+import CombatApp from './apps/CombatApp';
 
 // Placeholder for new apps (to be implemented)
 const PlaceholderApp = ({ appName, onBack }) => (
@@ -118,19 +123,19 @@ function PhoneApp() {
         return <StatsApp />;
       
       case 'quest':
-        return <PlaceholderApp appName="Quests" onBack={handleBackToHome} />;
+        return <QuestApp />;
       
       case 'inventory':
-        return <PlaceholderApp appName="Inventory" onBack={handleBackToHome} />;
+        return <InventoryApp />;
       
       case 'combat':
-        return <PlaceholderApp appName="Combat" onBack={handleBackToHome} />;
+        return <CombatApp />;
       
       case 'pets':
-        return <PlaceholderApp appName="Pets" onBack={handleBackToHome} />;
+        return <PetsApp />;
       
       case 'notes':
-        return <PlaceholderApp appName="Notes" onBack={handleBackToHome} />;
+        return <NotesApp />;
 
       default:
         return <HomeScreen onAppOpen={handleAppOpen} />;

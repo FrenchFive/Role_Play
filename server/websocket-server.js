@@ -139,10 +139,12 @@ function handleMessage(ws, data) {
       break;
 
     case 'quest_update':
+    case 'quest_sync':
       broadcast({
-        type: 'quest_update',
+        type: 'quest_sync',
         clientId: client.id,
         quest: data.quest,
+        action: data.action || 'update',
         timestamp: new Date().toISOString()
       });
       break;
