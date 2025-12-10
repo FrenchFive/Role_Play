@@ -429,12 +429,7 @@ export default function DMRewardsApp() {
   
   const handleAwardXP = (player, amount, reason) => {
     // Send XP award to player via WebSocket
-    wsClient.send({
-      type: 'xp_award',
-      targetClientId: player.id,
-      amount,
-      reason
-    });
+    wsClient.awardXPToPlayer(player.id, amount, reason);
     
     // Show local notification
     setRecentAwards(prev => ({ ...prev, [player.id]: { amount, reason } }));
