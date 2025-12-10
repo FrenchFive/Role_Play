@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import { mapDatabase } from '../utils/sharedData';
 import { wsClient } from '../utils/websocket';
 import { database } from '../utils/database';
-import { MapIcon, PlusIcon, XIcon, TrashIcon, CheckIcon } from '../components/icons/Icons';
+import { MapIcon, PlusIcon, XIcon, TrashIcon, CheckIcon, EditIcon } from '../components/icons/Icons';
 import 'leaflet/dist/leaflet.css';
 import './MapApp.css';
 
@@ -38,7 +38,13 @@ export default function MapApp() {
   const [mapCenter, setMapCenter] = useState([51.505, -0.09]); // Default to London
   const character = database.getCurrentCharacter();
 
+  const loadPins = () => {
+    const allPins = mapDatabase.getAllPins();
+    setPins(allPins);
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadPins();
 
     if (wsClient) {
@@ -56,11 +62,6 @@ export default function MapApp() {
       }
     };
   }, []);
-
-  const loadPins = () => {
-    const allPins = mapDatabase.getAllPins();
-    setPins(allPins);
-  };
 
   const handleMapClick = (latlng) => {
     if (isAddingPin) {

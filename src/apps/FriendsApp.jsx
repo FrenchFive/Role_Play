@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import { wsClient } from '../utils/websocket';
-import { dmMode } from '../utils/database';
 import { UsersIcon, WifiIcon, CrownIcon, SwordsIcon } from '../components/icons/Icons';
 import './FriendsApp.css';
 
 function FriendsApp() {
   const [connectedUsers, setConnectedUsers] = useState([]);
-  const [isDM, setIsDM] = useState(false);
   const [myPing, setMyPing] = useState(null);
 
   useEffect(() => {
-    // Load DM mode
-    setIsDM(dmMode.isDM());
 
     // Listen for user list updates
     const handleUserList = (users) => {

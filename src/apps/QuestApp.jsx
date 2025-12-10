@@ -16,7 +16,13 @@ function QuestApp() {
     completed: false
   });
 
+  const loadQuests = () => {
+    const allQuests = questDatabase.getAllQuests();
+    setQuests(allQuests);
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadQuests();
 
     // Listen for quest updates from server
@@ -35,11 +41,6 @@ function QuestApp() {
       });
     }
   }, []);
-
-  const loadQuests = () => {
-    const allQuests = questDatabase.getAllQuests();
-    setQuests(allQuests);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
