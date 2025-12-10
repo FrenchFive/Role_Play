@@ -84,6 +84,93 @@ export const database = {
   }
 };
 
+// DM Mode Management
+const DM_MODE_KEY = 'hunters_dm_mode';
+
+export const dmMode = {
+  isDM() {
+    return localStorage.getItem(DM_MODE_KEY) === 'true';
+  },
+
+  setDM(isDM) {
+    localStorage.setItem(DM_MODE_KEY, isDM ? 'true' : 'false');
+  },
+
+  toggle() {
+    const current = this.isDM();
+    this.setDM(!current);
+    return !current;
+  }
+};
+
+// Secret Identity Management (per character)
+const SECRET_IDENTITIES_KEY = 'hunters_secret_identities_';
+
+export const secretIdentityDatabase = {
+  getIdentities(characterId) {
+    const data = localStorage.getItem(SECRET_IDENTITIES_KEY + characterId);
+    return data ? JSON.parse(data) : [];
+  },
+
+  getIdentity(characterId, id) {
+    const identities = this.getIdentities(characterId);
+    return identities.find(i => i.id === id);
+  },
+
+  saveIdentity(characterId, identity) {
+    const identities = this.getIdentities(characterId);
+    const newIdentity = {
+      ...identity,
+      id: identity.id || Date.now().toString(),
+      type: identity.type || 'disguise', // 'disguise' or 'secret_identity'
+      name: identity.name || '',
+      coverStory: identity.coverStory || '',
+      createdAt: identity.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const existingIndex = identities.findIndex(i => i.id === newIdentity.id);
+    if (existingIndex >= 0) {
+      identities[existingIndex] = newIdentity;
+    } else {
+      identities.push(newIdentity);
+    }
+
+    localStorage.setItem(SECRET_IDENTITIES_KEY + characterId, JSON.stringify(identities));
+    return newIdentity;
+  },
+
+  deleteIdentity(characterId, id) {
+    const identities = this.getIdentities(characterId);
+    const filtered = identities.filter(i => i.id !== id);
+    localStorage.setItem(SECRET_IDENTITIES_KEY + characterId, JSON.stringify(filtered));
+  },
+
+  // Get currently active identity for a character
+  getActiveIdentity(characterId) {
+    const identities = this.getIdentities(characterId);
+    return identities.find(i => i.active) || null;
+  },
+
+  // Set active identity
+  setActiveIdentity(characterId, id) {
+    const identities = this.getIdentities(characterId);
+    identities.forEach(i => {
+      i.active = i.id === id;
+    });
+    localStorage.setItem(SECRET_IDENTITIES_KEY + characterId, JSON.stringify(identities));
+  },
+
+  // Clear active identity (use real name)
+  clearActiveIdentity(characterId) {
+    const identities = this.getIdentities(characterId);
+    identities.forEach(i => {
+      i.active = false;
+    });
+    localStorage.setItem(SECRET_IDENTITIES_KEY + characterId, JSON.stringify(identities));
+  }
+};
+
 // Character Bank Management
 const BANK_KEY = 'hunters_character_bank_';
 

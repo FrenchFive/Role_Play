@@ -10,6 +10,10 @@ class WebSocketClient {
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 5;
     this.reconnectDelay = 3000;
+    this.ping = null;
+    this.pingInterval = null;
+    this.isDM = false;
+    this.connectedUsers = [];
   }
 
   connect(serverUrl, character) {
@@ -31,6 +35,9 @@ class WebSocketClient {
         if (character) {
           this.setCharacter(character);
         }
+        
+        // Start ping monitoring
+        this.startPing();
         
         this.emit('connected');
       };
@@ -72,11 +79,34 @@ class WebSocketClient {
   disconnect() {
     if (this.ws) {
       this.reconnectAttempts = this.maxReconnectAttempts; // Prevent reconnection
+      this.stopPing();
       this.ws.close();
       this.ws = null;
       this.connected = false;
       this.clientId = null;
     }
+  }
+
+  startPing() {
+    this.stopPing();
+    this.pingInterval = setInterval(() => {
+      if (this.connected) {
+        const startTime = Date.now();
+        this.send({ type: 'ping', timestamp: startTime });
+        this.lastPingTime = startTime;
+      }
+    }, 5000); // Ping every 5 seconds
+  }
+
+  stopPing() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+      this.pingInterval = null;
+    }
+  }
+
+  getPing() {
+    return this.ping;
   }
 
   handleMessage(data) {
@@ -103,7 +133,35 @@ class WebSocketClient {
         break;
       
       case 'pong':
+        if (this.lastPingTime) {
+          this.ping = Date.now() - this.lastPingTime;
+          this.emit('ping_update', this.ping);
+        }
         this.emit('pong');
+        break;
+      
+      case 'codex_update':
+        this.emit('codex_update', data);
+        break;
+      
+      case 'bestiary_update':
+        this.emit('bestiary_update', data);
+        break;
+      
+      case 'quest_update':
+        this.emit('quest_update', data);
+        break;
+      
+      case 'map_update':
+        this.emit('map_update', data);
+        break;
+      
+      case 'message':
+        this.emit('message', data);
+        break;
+      
+      case 'combat_update':
+        this.emit('combat_update', data);
         break;
       
       case 'error':
@@ -124,9 +182,20 @@ class WebSocketClient {
       character: {
         name: character.name,
         level: character.level,
-        image: null // Don't send image to reduce bandwidth
+        image: null, // Don't send image to reduce bandwidth
+        isDM: this.isDM
       }
     });
+  }
+
+  setDMMode(isDM) {
+    this.isDM = isDM;
+    if (this.connected) {
+      this.send({
+        type: 'set_dm_mode',
+        isDM: isDM
+      });
+    }
   }
 
   sendDiceRoll(roll) {
@@ -136,6 +205,42 @@ class WebSocketClient {
       type: 'dice_roll',
       roll: roll
     });
+  }
+
+  // Sync codex page
+  syncCodex(page) {
+    if (!this.connected) return;
+    this.send({ type: 'codex_update', page });
+  }
+
+  // Sync bestiary entry
+  syncBestiary(entry) {
+    if (!this.connected) return;
+    this.send({ type: 'bestiary_update', entry });
+  }
+
+  // Sync quest
+  syncQuest(quest) {
+    if (!this.connected) return;
+    this.send({ type: 'quest_update', quest });
+  }
+
+  // Sync map pin
+  syncMap(pin) {
+    if (!this.connected) return;
+    this.send({ type: 'map_update', pin });
+  }
+
+  // Send message to NPC (goes to DM)
+  sendMessage(message) {
+    if (!this.connected) return;
+    this.send({ type: 'message', message });
+  }
+
+  // Sync combat state
+  syncCombat(state) {
+    if (!this.connected) return;
+    this.send({ type: 'combat_update', state });
   }
 
   send(data) {
@@ -179,6 +284,10 @@ class WebSocketClient {
 
   getClientId() {
     return this.clientId;
+  }
+
+  getConnectedUsers() {
+    return this.connectedUsers;
   }
 }
 

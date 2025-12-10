@@ -33,6 +33,8 @@ wss.on('connection', (ws, req) => {
     id: clientId,
     ip: clientIp,
     character: null,
+    isDM: false,
+    ping: null,
     connectedAt: new Date()
   });
 
@@ -105,7 +107,81 @@ function handleMessage(ws, data) {
       break;
 
     case 'ping':
-      ws.send(JSON.stringify({ type: 'pong' }));
+      ws.send(JSON.stringify({ type: 'pong', timestamp: data.timestamp }));
+      break;
+
+    case 'set_dm_mode':
+      client.isDM = data.isDM;
+      broadcast({
+        type: 'user_updated',
+        clientId: client.id,
+        character: client.character,
+        isDM: client.isDM
+      }, ws);
+      break;
+
+    case 'codex_update':
+      broadcast({
+        type: 'codex_update',
+        clientId: client.id,
+        page: data.page,
+        timestamp: new Date().toISOString()
+      });
+      break;
+
+    case 'bestiary_update':
+      broadcast({
+        type: 'bestiary_update',
+        clientId: client.id,
+        entry: data.entry,
+        timestamp: new Date().toISOString()
+      });
+      break;
+
+    case 'quest_update':
+      broadcast({
+        type: 'quest_update',
+        clientId: client.id,
+        quest: data.quest,
+        timestamp: new Date().toISOString()
+      });
+      break;
+
+    case 'map_update':
+      broadcast({
+        type: 'map_update',
+        clientId: client.id,
+        pin: data.pin,
+        timestamp: new Date().toISOString()
+      });
+      break;
+
+    case 'message':
+      // Send message to DM or specific player
+      if (data.message.toDM) {
+        broadcastToDM({
+          type: 'message',
+          from: client.character,
+          message: data.message,
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        broadcast({
+          type: 'message',
+          from: client.character,
+          message: data.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+      break;
+
+    case 'combat_update':
+      broadcast({
+        type: 'combat_update',
+        clientId: client.id,
+        state: data.state,
+        timestamp: new Date().toISOString()
+      });
       break;
 
     default:
@@ -118,6 +194,17 @@ function broadcast(message, excludeWs = null) {
   
   wss.clients.forEach((client) => {
     if (client !== excludeWs && client.readyState === WebSocket.OPEN) {
+      client.send(messageStr);
+    }
+  });
+}
+
+function broadcastToDM(message) {
+  const messageStr = JSON.stringify(message);
+  
+  wss.clients.forEach((client) => {
+    const clientInfo = clients.get(client);
+    if (clientInfo && clientInfo.isDM && client.readyState === WebSocket.OPEN) {
       client.send(messageStr);
     }
   });
