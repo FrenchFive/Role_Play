@@ -22,6 +22,11 @@ import PetsApp from './apps/PetsApp';
 import NotesApp from './apps/NotesApp';
 import CombatApp from './apps/CombatApp';
 import DMRewardsApp from './apps/DMRewardsApp';
+import ConditionsApp from './apps/ConditionsApp';
+import TouchstonesApp from './apps/TouchstonesApp';
+import ChronicleApp from './apps/ChronicleApp';
+import AdvancedDiceApp from './apps/AdvancedDiceApp';
+import CampaignApp from './apps/CampaignApp';
 
 // Utils
 import { database, dmMode } from './utils/database';
@@ -44,6 +49,11 @@ const SIMPLE_APPS = {
   notes: NotesApp,
   combat: CombatApp,
   rewards: DMRewardsApp,
+  conditions: ConditionsApp,
+  touchstones: TouchstonesApp,
+  chronicle: ChronicleApp,
+  dice: AdvancedDiceApp,
+  campaign: CampaignApp,
 };
 
 // Placeholder for requiring character selection
