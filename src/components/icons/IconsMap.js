@@ -1,6 +1,6 @@
 /**
  * Icons map for dynamic icon usage
- * Import this file when you need to access icons by string name
+ * Separated from Icons.jsx to comply with react-refresh rules
  */
 
 import {
