@@ -85,6 +85,40 @@ The built files will be in the `dist` directory.
 npm run preview
 ```
 
+### Verify Build Before Deployment
+
+Use the included build verification script to ensure everything is ready:
+
+```bash
+./verify-build.sh
+```
+
+This script will:
+- Check Node.js and npm versions
+- Verify all dependencies are installed
+- Run linting checks
+- Build the project
+- Validate GitHub Actions compatibility
+
+### Setting Up a Production Server
+
+Use the automated server setup script for Linux:
+
+```bash
+./setup-server.sh
+```
+
+This interactive script will:
+- Update system packages
+- Install Node.js 20.x LTS
+- Install PM2 process manager
+- Set up the WebSocket server
+- Configure Nginx with domain support
+- Optional: Install SSL certificate with Let's Encrypt
+- Configure firewall (UFW)
+
+See [docs/SERVER_SETUP.md](docs/SERVER_SETUP.md) for detailed manual setup instructions.
+
 ## 🎮 How to Use
 
 ### Creating Your First Character
