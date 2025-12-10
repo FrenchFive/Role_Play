@@ -4,14 +4,16 @@ import './HomeScreen.css';
 
 const APPS = [
   { id: 'character', name: 'Character', icon: '👤', color: '#FFB3BA' },
+  { id: 'friends', name: 'Friends', icon: '👥', color: '#BAFFC9' },
+  { id: 'codex', name: 'Codex', icon: '📖', color: '#D4BAFF' },
   { id: 'id', name: 'ID Card', icon: '🪪', color: '#BAE1FF' },
-  { id: 'contacts', name: 'Contacts', icon: '📞', color: '#BAFFC9' },
-  { id: 'stats', name: 'Stats', icon: '📊', color: '#D4BAFF' },
+  { id: 'contacts', name: 'Contacts', icon: '📞', color: '#C9E4DE' },
+  { id: 'stats', name: 'Stats', icon: '📊', color: '#E0BBE4' },
   { id: 'quest', name: 'Quests', icon: '✅', color: '#FFFFBA' },
   { id: 'map', name: 'Map', icon: '🗺️', color: '#FFB3E6' },
   { id: 'inventory', name: 'Inventory', icon: '🎒', color: '#FFDFBA' },
   { id: 'combat', name: 'Combat', icon: '⚔️', color: '#FF9AA2' },
-  { id: 'pets', name: 'Pets', icon: '🐾', color: '#BAFFC9' },
+  { id: 'pets', name: 'Pets', icon: '🐾', color: '#A2D5F2' },
   { id: 'bank', name: 'Bank', icon: '💰', color: '#BAE1FF' },
   { id: 'notes', name: 'Notes', icon: '📝', color: '#FFFFBA' },
   { id: 'settings', name: 'Settings', icon: '⚙️', color: '#D4BAFF' }

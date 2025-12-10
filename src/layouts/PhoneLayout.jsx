@@ -9,6 +9,8 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
   const [time, setTime] = useState(new Date());
   const [showNotification, _setShowNotification] = useState(false);
   const [notification, _setNotification] = useState('');
+  const [ping, setPing] = useState(null);
+  const [dmOnline, setDmOnline] = useState(false);
 
   useEffect(() => {
     // Update time every minute
@@ -19,9 +21,25 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
     // Connection status
     const handleConnected = () => setIsConnected(true);
     const handleDisconnected = () => setIsConnected(false);
+    const handlePingUpdate = (newPing) => setPing(newPing);
+    const handleUserList = (users) => {
+      const hasDM = users.some(u => u.isDM);
+      setDmOnline(hasDM);
+    };
+    const handleUserUpdated = (data) => {
+      if (data.isDM !== undefined) {
+        // Check all users for DM
+        const users = wsClient.getConnectedUsers();
+        const hasDM = users.some(u => u.isDM);
+        setDmOnline(hasDM);
+      }
+    };
     
     wsClient.on('connected', handleConnected);
     wsClient.on('disconnected', handleDisconnected);
+    wsClient.on('ping_update', handlePingUpdate);
+    wsClient.on('user_list', handleUserList);
+    wsClient.on('user_updated', handleUserUpdated);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsConnected(wsClient.isConnected());
 
@@ -41,6 +59,9 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
       clearInterval(batteryInterval);
       wsClient.off('connected', handleConnected);
       wsClient.off('disconnected', handleDisconnected);
+      wsClient.off('ping_update', handlePingUpdate);
+      wsClient.off('user_list', handleUserList);
+      wsClient.off('user_updated', handleUserUpdated);
     };
   }, []);
 
@@ -80,7 +101,12 @@ function PhoneLayout({ children, currentApp, onAppChange }) {
           <span className="status-time">{formatTime()}</span>
         </div>
         <div className="status-right">
-          <div className="status-wifi">
+          {dmOnline && isConnected && (
+            <div className="status-dm" title="DM Online">
+              <span>👑</span>
+            </div>
+          )}
+          <div className="status-wifi" title={isConnected && ping ? `Ping: ${ping}ms` : 'Not connected'}>
             {isConnected ? (
               <span className="wifi-connected">📶</span>
             ) : (

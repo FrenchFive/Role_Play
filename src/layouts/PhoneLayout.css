@@ -51,6 +51,12 @@
   opacity: 0.5;
 }
 
+.status-dm {
+  font-size: 16px;
+  animation: pulse 2s infinite;
+  cursor: help;
+}
+
 .status-battery {
   display: flex;
   align-items: center;

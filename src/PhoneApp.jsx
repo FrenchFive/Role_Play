@@ -9,6 +9,9 @@ import CharacterMain from './pages/CharacterMain';
 import BankPage from './pages/BankPage';
 import Settings from './pages/Settings';
 
+// Import new apps
+import FriendsApp from './apps/FriendsApp';
+
 // Placeholder for new apps (to be implemented)
 const PlaceholderApp = ({ appName, onBack }) => (
   <div style={{ padding: '20px', textAlign: 'center' }}>
@@ -90,6 +93,12 @@ function PhoneApp() {
             onClose={handleBackToHome}
           />
         );
+
+      case 'friends':
+        return <FriendsApp />;
+
+      case 'codex':
+        return <PlaceholderApp appName="Codex & Bestiary" onBack={handleBackToHome} />;
 
       case 'id':
         return <PlaceholderApp appName="ID Card" onBack={handleBackToHome} />;
