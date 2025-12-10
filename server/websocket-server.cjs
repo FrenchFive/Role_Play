@@ -1,7 +1,10 @@
 /**
- * WebSocket Server for Hunters RPG Multiplayer
+ * S0LSTICE_OS WebSocket Server
  * 
- * Handles real-time synchronization of:
+ * Real-time multiplayer server for the S0LSTICE_OS application.
+ * Default port: 5055 (S0-55 for S0lstice)
+ * 
+ * Handles synchronization of:
  * - Dice rolls
  * - Combat encounters
  * - Codex/Bestiary pages
@@ -11,15 +14,16 @@
  * - XP awards
  * - Character updates
  * 
- * Run with: node websocket-server.js
- * Or with PM2: pm2 start websocket-server.js --name hunters-rpg
+ * Run with: node websocket-server.cjs
+ * Or with PM2: pm2 start websocket-server.cjs --name s0lstice-ws
  */
 
 const WebSocket = require('ws');
 const http = require('http');
 
 // Configuration
-const PORT = process.env.PORT || 8080;
+// Default port: 5055 (S0-55 for S0lstice)
+const PORT = process.env.PORT || 5055;
 const HEARTBEAT_INTERVAL = 30000; // 30 seconds
 const CLIENT_TIMEOUT = 35000; // 35 seconds
 
@@ -646,9 +650,9 @@ function generateClientId() {
 // ==========================================
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log('============================================');
-  console.log('  Hunters RPG WebSocket Server');
-  console.log('============================================');
+console.log('============================================');
+console.log('  S0LSTICE_OS WebSocket Server');
+console.log('============================================');
   console.log(`  Status:     Running`);
   console.log(`  Port:       ${PORT}`);
   console.log(`  Health:     http://localhost:${PORT}/health`);

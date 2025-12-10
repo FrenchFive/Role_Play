@@ -1,13 +1,15 @@
-# Hunters RPG Server Setup Guide
+# S0LSTICE_OS Server Setup Guide
 
-Complete guide for setting up the WebSocket server for real-time multiplayer functionality in Hunters RPG.
+Complete guide for setting up the WebSocket server for real-time multiplayer functionality.
+
+> **Default Port: 5055** (S0-55 for S0lstice)
 
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Quick Start](#quick-start)
-4. [Production Deployment](#production-deployment)
+2. [Quick Start](#quick-start)
+3. [Automated Setup](#automated-setup)
+4. [Manual Production Setup](#manual-production-setup)
 5. [Configuration](#configuration)
 6. [Real-time Features](#real-time-features)
 7. [Client Configuration](#client-configuration)
@@ -19,7 +21,7 @@ Complete guide for setting up the WebSocket server for real-time multiplayer fun
 
 ## Overview
 
-The Hunters RPG WebSocket server enables real-time synchronization between multiple players and the Dungeon Master (DM). It handles:
+The S0LSTICE_OS WebSocket server enables real-time synchronization between players and the Dungeon Master (DM). It handles:
 
 - **Dice Rolls** - Live shared dice rolling visible to all players
 - **Combat Encounters** - DM-controlled combat state synchronization
@@ -30,64 +32,98 @@ The Hunters RPG WebSocket server enables real-time synchronization between multi
 - **Messages** - In-game messaging between players and NPCs
 - **Initiative Tracking** - Combat turn order management
 
----
+### Port Selection
 
-## Prerequisites
-
-- **Node.js** v18.0.0 or higher
-- **npm** (comes with Node.js)
-- **A server** with a public IP or domain (for remote play)
-- **Optional**: Nginx (for SSL/reverse proxy)
-- **Optional**: PM2 (for process management)
-- **Optional**: SSL certificate (Let's Encrypt recommended)
+The default port **5055** was chosen because:
+- "S0-55" represents "S0lstice" (the app name)
+- It's above 1024 (doesn't require root privileges)
+- It's not used by common services
+- It's easy to remember
 
 ---
 
 ## Quick Start
 
-### Local Development
+### Option 1: Local Development (Simplest)
 
-1. **Navigate to the server directory**:
-   ```bash
-   cd server
-   ```
+```bash
+# Navigate to server directory
+cd server
 
-2. **Install dependencies**:
-   ```bash
-   npm install ws
-   ```
+# Install dependencies
+npm install ws
 
-3. **Start the server**:
-   ```bash
-   node websocket-server.cjs
-   ```
+# Start the server (runs on port 5055)
+node websocket-server.cjs
+```
 
-4. **Verify it's running**:
-   ```bash
-   curl http://localhost:8080/health
-   ```
+Verify it's running:
+```bash
+curl http://localhost:5055/health
+```
 
-   Expected response:
-   ```json
-   {"status":"ok","uptime":5.123,"connections":0,"clients":[],"timestamp":"..."}
-   ```
+Connect from the app: `ws://localhost:5055/ws`
 
-5. **Connect from the app**:
-   - Open Hunters RPG
-   - Go to Settings
-   - Enter server URL: `ws://localhost:8080/ws`
-   - Click "Connect"
+### Option 2: Automated Production Setup
+
+```bash
+# Make the script executable
+chmod +x server/setup-server.sh
+
+# Run with sudo for full automation
+sudo ./server/setup-server.sh
+
+# Or with SSL for a domain:
+sudo ./server/setup-server.sh --ssl your-domain.com
+```
+
+The script handles:
+- ✅ Node.js installation
+- ✅ PM2 process manager
+- ✅ Firewall configuration (UFW/firewalld)
+- ✅ Nginx reverse proxy
+- ✅ SSL certificates (optional)
+- ✅ Auto-start on boot
 
 ---
 
-## Production Deployment
+## Automated Setup
 
-### Step 1: Server Setup
+The `setup-server.sh` script provides plug-and-play installation:
 
 ```bash
-# SSH into your server
-ssh user@your-server-ip
+# Usage
+./setup-server.sh              # Local dev mode
+sudo ./setup-server.sh         # Production with auto-detection
+sudo ./setup-server.sh --ssl domain.com   # Production with SSL
 
+# Options
+--ssl [DOMAIN]   Enable SSL with Let's Encrypt
+--domain DOMAIN  Set domain name
+--port PORT      Override default port (5055)
+--dev            Force development mode
+--help           Show help
+```
+
+### What the Script Does
+
+1. **Checks/Installs Node.js 18+**
+2. **Sets up application directory** (`/opt/s0lstice-server`)
+3. **Installs PM2** for process management
+4. **Configures firewall** (opens ports 22, 80, 443, 5055)
+5. **Sets up Nginx** as reverse proxy
+6. **Obtains SSL certificate** via Let's Encrypt (if requested)
+7. **Starts the server** and configures auto-start
+
+---
+
+## Manual Production Setup
+
+If you prefer manual setup:
+
+### Step 1: Install Prerequisites
+
+```bash
 # Update system
 sudo apt update && sudo apt upgrade -y
 
@@ -95,162 +131,87 @@ sudo apt update && sudo apt upgrade -y
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Verify installation
-node --version  # Should be v18.x.x or higher
-npm --version
+# Verify
+node --version  # Should be v18.x.x+
 ```
 
-### Step 2: Deploy the Server
+### Step 2: Deploy Server
 
 ```bash
 # Create app directory
-sudo mkdir -p /opt/hunters-rpg
-sudo chown $USER:$USER /opt/hunters-rpg
+sudo mkdir -p /opt/s0lstice-server
+sudo chown $USER:$USER /opt/s0lstice-server
 
-# Copy server files
-cd /opt/hunters-rpg
-# Copy websocket-server.cjs to this directory
+# Copy server file
+cp server/websocket-server.cjs /opt/s0lstice-server/
 
 # Install dependencies
+cd /opt/s0lstice-server
 npm install ws
-
-# Test run
-node websocket-server.cjs
 ```
 
-### Step 3: Install PM2 for Process Management
+### Step 3: Install PM2
 
 ```bash
 # Install PM2 globally
 sudo npm install -g pm2
 
-# Start the server with PM2
-pm2 start websocket-server.cjs --name hunters-rpg
+# Start server with PM2
+pm2 start websocket-server.cjs --name s0lstice-ws
 
-# Configure PM2 to start on boot
+# Configure auto-start
 pm2 startup
 pm2 save
-
-# Useful PM2 commands:
-pm2 status              # View running processes
-pm2 logs hunters-rpg    # View logs
-pm2 restart hunters-rpg # Restart server
-pm2 stop hunters-rpg    # Stop server
 ```
 
-### Step 4: Setup Nginx (Recommended)
+### Step 4: Configure Firewall
+
+```bash
+# Allow required ports
+sudo ufw allow 22/tcp    # SSH (important!)
+sudo ufw allow 80/tcp    # HTTP
+sudo ufw allow 443/tcp   # HTTPS
+sudo ufw allow 5055/tcp  # WebSocket (direct access)
+
+# Enable firewall
+sudo ufw enable
+
+# Check status
+sudo ufw status
+```
+
+### Step 5: Setup Nginx (Recommended)
 
 ```bash
 # Install Nginx
 sudo apt install -y nginx
 
-# Create configuration file
-sudo nano /etc/nginx/sites-available/hunters-rpg
-```
+# Copy configuration
+sudo cp server/nginx.conf /etc/nginx/sites-available/s0lstice
 
-Copy this configuration (replace `your-domain.com`):
+# Edit domain name
+sudo nano /etc/nginx/sites-available/s0lstice
 
-```nginx
-upstream websocket_backend {
-    server 127.0.0.1:8080;
-    keepalive 64;
-}
-
-server {
-    listen 80;
-    server_name your-domain.com;
-    
-    # Redirect HTTP to HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com;
-
-    # SSL Configuration (update paths after running certbot)
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
-    ssl_prefer_server_ciphers off;
-
-    # WebSocket endpoint
-    location /ws {
-        proxy_pass http://websocket_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # WebSocket timeout settings
-        proxy_read_timeout 3600s;
-        proxy_send_timeout 3600s;
-        proxy_connect_timeout 60s;
-    }
-
-    # Health check endpoint
-    location /health {
-        proxy_pass http://websocket_backend/health;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    # Stats endpoint
-    location /stats {
-        proxy_pass http://websocket_backend/stats;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    # Logs
-    access_log /var/log/nginx/hunters-rpg-access.log;
-    error_log /var/log/nginx/hunters-rpg-error.log;
-}
-```
-
-Enable the configuration:
-
-```bash
 # Enable site
-sudo ln -s /etc/nginx/sites-available/hunters-rpg /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/s0lstice /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default
 
-# Test configuration
+# Test and reload
 sudo nginx -t
-
-# Reload Nginx
 sudo systemctl reload nginx
 ```
 
-### Step 5: SSL Certificate (Let's Encrypt)
+### Step 6: SSL Certificate
 
 ```bash
 # Install Certbot
 sudo apt install -y certbot python3-certbot-nginx
 
-# Obtain certificate
+# Obtain certificate (replace with your domain)
 sudo certbot --nginx -d your-domain.com
 
 # Test auto-renewal
 sudo certbot renew --dry-run
-```
-
-### Step 6: Firewall Configuration
-
-```bash
-# Allow HTTP, HTTPS
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# If running without Nginx, allow direct WebSocket port
-sudo ufw allow 8080/tcp
-
-# Enable firewall
-sudo ufw enable
 ```
 
 ---
@@ -261,16 +222,15 @@ sudo ufw enable
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PORT` | `8080` | WebSocket server port |
+| `PORT` | `5055` | WebSocket server port |
 
-Example:
+Examples:
 ```bash
+# Direct
 PORT=9000 node websocket-server.cjs
-```
 
-Or with PM2:
-```bash
-PORT=9000 pm2 start websocket-server.cjs --name hunters-rpg
+# With PM2
+PORT=9000 pm2 start websocket-server.cjs --name s0lstice-ws
 ```
 
 ### Server Endpoints
@@ -297,13 +257,19 @@ PORT=9000 pm2 start websocket-server.cjs --name hunters-rpg
 | `quest_sync` | Sync quest updates | No |
 | `map_sync` | Sync map pins | No |
 | `map_update` | Update single pin | No |
+| `map_pin_add` | Add map pin | No |
+| `map_pin_remove` | Remove map pin | No |
 | `message` | Send message | No |
 | `contact_sync` | Sync contact | No |
 | `combat_update` | Update combat state | No |
 | `encounter_sync` | Sync encounter | Yes |
 | `xp_award` | Award XP to player | Yes |
 | `initiative_update` | Update initiative order | Yes |
+| `note_sync` | Sync notes | No |
+| `shared_note` | Share note with players | Yes |
 | `ping` | Ping for latency check | No |
+| `get_users` | Request user list | No |
+| `get_game_state` | Request game state | No |
 
 ### Message Types (Server → Client)
 
@@ -313,42 +279,51 @@ PORT=9000 pm2 start websocket-server.cjs --name hunters-rpg
 | `user_joined` | New user connected |
 | `user_left` | User disconnected |
 | `user_updated` | User info changed |
+| `user_list` | List of connected users |
 | `dice_roll` | Dice roll broadcast |
 | `codex_sync` | Codex data received |
 | `bestiary_sync` | Bestiary data received |
 | `quest_sync` | Quest update received |
 | `map_sync` | Map pins received |
 | `map_update` | Single pin update |
+| `map_pin_add` | New pin added |
+| `map_pin_remove` | Pin removed |
 | `message` | Message received |
 | `combat_update` | Combat state update |
 | `encounter_sync` | Encounter data |
 | `xp_award` | XP awarded (to target) |
+| `xp_announcement` | XP award broadcast |
 | `initiative_update` | Initiative order |
+| `note_sync` | Note data received |
+| `shared_note` | Shared note from DM |
+| `game_state` | Full game state |
 | `pong` | Ping response |
 | `error` | Error message |
+| `server_shutdown` | Server shutting down |
 
 ---
 
 ## Client Configuration
 
-### In the App
+### In the S0LSTICE_OS App
 
-1. Open Hunters RPG application
-2. Navigate to **Settings**
-3. Find the **Multiplayer** section
+1. Open the application
+2. Navigate to **Settings** (gear icon)
+3. Find **Multiplayer Server** section
 4. Enter your server URL:
-   - Local: `ws://localhost:8080/ws`
-   - Production (no SSL): `ws://your-server-ip:8080/ws`
-   - Production (with SSL): `wss://your-domain.com/ws`
+   - **Local**: `ws://localhost:5055/ws`
+   - **Remote (no SSL)**: `ws://YOUR_IP:5055/ws`
+   - **Remote (with SSL)**: `wss://your-domain.com/ws`
 5. Click **Connect**
-6. Status should show "Connected" with ping time
 
-### Connection States
+### Connection URLs
 
-- **Disconnected** - Not connected to server
-- **Connecting** - Attempting to connect
-- **Connected** - Successfully connected (shows ping)
-- **Reconnecting** - Lost connection, attempting to reconnect
+| Environment | WebSocket URL |
+|-------------|---------------|
+| Local Dev | `ws://localhost:5055/ws` |
+| LAN (IP) | `ws://192.168.x.x:5055/ws` |
+| Production (IP) | `ws://YOUR_PUBLIC_IP:5055/ws` |
+| Production (Domain) | `wss://your-domain.com/ws` |
 
 ---
 
@@ -357,18 +332,21 @@ PORT=9000 pm2 start websocket-server.cjs --name hunters-rpg
 ### Health Check
 
 ```bash
-# Basic health check
+curl http://localhost:5055/health
+# or
 curl https://your-domain.com/health
+```
 
-# Response:
+Response:
+```json
 {
   "status": "ok",
   "uptime": 3600.123,
   "connections": 5,
   "clients": [
     {
-      "id": "client_abc123_xyz789",
-      "character": "Sir Galahad",
+      "id": "client_abc123",
+      "character": "Marcus",
       "isDM": false,
       "connectedAt": "2024-01-15T10:30:00.000Z"
     }
@@ -380,9 +358,11 @@ curl https://your-domain.com/health
 ### Statistics
 
 ```bash
-curl https://your-domain.com/stats
+curl http://localhost:5055/stats
+```
 
-# Response:
+Response:
+```json
 {
   "totalConnections": 150,
   "totalMessages": 5000,
@@ -392,27 +372,26 @@ curl https://your-domain.com/stats
 }
 ```
 
-### PM2 Logs
+### PM2 Commands
 
 ```bash
-# View live logs
-pm2 logs hunters-rpg
-
-# View last 100 lines
-pm2 logs hunters-rpg --lines 100
-
-# Clear logs
-pm2 flush hunters-rpg
+pm2 status              # View all processes
+pm2 logs s0lstice-ws    # View logs
+pm2 logs s0lstice-ws --lines 100  # Last 100 lines
+pm2 monit               # Real-time monitoring
+pm2 restart s0lstice-ws # Restart server
+pm2 stop s0lstice-ws    # Stop server
+pm2 flush s0lstice-ws   # Clear logs
 ```
 
 ### Nginx Logs
 
 ```bash
 # Access logs
-tail -f /var/log/nginx/hunters-rpg-access.log
+tail -f /var/log/nginx/s0lstice-access.log
 
 # Error logs
-tail -f /var/log/nginx/hunters-rpg-error.log
+tail -f /var/log/nginx/s0lstice-error.log
 ```
 
 ---
@@ -424,13 +403,13 @@ tail -f /var/log/nginx/hunters-rpg-error.log
 1. **Check if server is running**:
    ```bash
    pm2 status
-   # or
-   curl http://localhost:8080/health
+   curl http://localhost:5055/health
    ```
 
 2. **Check firewall**:
    ```bash
    sudo ufw status
+   # Port 5055 should be ALLOW
    ```
 
 3. **Check Nginx** (if using):
@@ -439,55 +418,48 @@ tail -f /var/log/nginx/hunters-rpg-error.log
    sudo systemctl status nginx
    ```
 
+### Port Already in Use
+
+```bash
+# Find what's using the port
+sudo lsof -i :5055
+
+# Kill the process if needed
+sudo kill -9 <PID>
+
+# Or use a different port
+PORT=5056 pm2 start websocket-server.cjs --name s0lstice-ws
+```
+
 ### SSL Errors
 
-1. **Verify certificates exist**:
+1. **Verify certificates**:
    ```bash
+   sudo certbot certificates
    ls -la /etc/letsencrypt/live/your-domain.com/
    ```
 
-2. **Check certificate validity**:
-   ```bash
-   sudo certbot certificates
-   ```
-
-3. **Renew if expired**:
+2. **Renew if expired**:
    ```bash
    sudo certbot renew
    ```
 
-### High Latency
+### WebSocket Disconnections
 
-1. **Check server resources**:
+1. **Check logs for timeout**:
    ```bash
-   htop
+   pm2 logs s0lstice-ws | grep "timed out"
    ```
 
-2. **Check network**:
-   ```bash
-   ping your-domain.com
-   ```
-
-3. **Check PM2 memory usage**:
-   ```bash
-   pm2 monit
-   ```
-
-### Disconnections
-
-1. **Check heartbeat in logs**:
-   ```bash
-   pm2 logs hunters-rpg | grep "timed out"
-   ```
-
-2. **Increase Nginx timeouts** (if applicable):
+2. **Increase Nginx timeouts** in `/etc/nginx/sites-available/s0lstice`:
    ```nginx
-   proxy_read_timeout 7200s;  # 2 hours
+   proxy_read_timeout 86400s;  # 24 hours
    ```
 
-3. **Check for memory leaks**:
+3. **Restart services**:
    ```bash
-   pm2 restart hunters-rpg  # Restart if memory is growing
+   pm2 restart s0lstice-ws
+   sudo systemctl reload nginx
    ```
 
 ---
@@ -498,23 +470,21 @@ tail -f /var/log/nginx/hunters-rpg-error.log
 
 1. **Always use WSS (SSL) in production**
 2. **Keep Node.js and dependencies updated**
-3. **Use firewall to restrict access**
-4. **Monitor logs for suspicious activity**
-5. **Implement rate limiting** (future feature)
-6. **Use strong SSL configuration**
+3. **Use firewall** - only open necessary ports
+4. **Monitor logs** for suspicious activity
+5. **Use strong SSL configuration**
 
-### Updating Dependencies
+### Updating
 
 ```bash
-cd /opt/hunters-rpg
+cd /opt/s0lstice-server
 npm update
-pm2 restart hunters-rpg
+pm2 restart s0lstice-ws
 ```
 
-### SSL Certificate Auto-Renewal
+### SSL Auto-Renewal
 
-Certbot sets up auto-renewal automatically. Verify:
-
+Certbot sets up auto-renewal. Verify:
 ```bash
 sudo systemctl status certbot.timer
 ```
@@ -523,40 +493,45 @@ sudo systemctl status certbot.timer
 
 ## Quick Reference
 
-### Start/Stop Commands
-
-```bash
-# Start server
-pm2 start hunters-rpg
-
-# Stop server
-pm2 stop hunters-rpg
-
-# Restart server
-pm2 restart hunters-rpg
-
-# View status
-pm2 status
-
-# View logs
-pm2 logs hunters-rpg
-```
-
-### URLs
-
-| Environment | WebSocket URL |
-|-------------|--------------|
-| Local Dev | `ws://localhost:8080/ws` |
-| Production (IP) | `ws://YOUR_IP:8080/ws` |
-| Production (Domain) | `wss://your-domain.com/ws` |
-
 ### Default Ports
 
 | Service | Port |
 |---------|------|
-| WebSocket Server | 8080 |
-| HTTP | 80 |
-| HTTPS | 443 |
+| **WebSocket Server** | **5055** |
+| HTTP (Nginx) | 80 |
+| HTTPS (Nginx) | 443 |
+
+### Essential Commands
+
+```bash
+# Start
+pm2 start s0lstice-ws
+
+# Stop
+pm2 stop s0lstice-ws
+
+# Restart
+pm2 restart s0lstice-ws
+
+# Logs
+pm2 logs s0lstice-ws
+
+# Status
+pm2 status
+
+# Health check
+curl http://localhost:5055/health
+```
+
+### File Locations
+
+| File | Path |
+|------|------|
+| Server script | `/opt/s0lstice-server/websocket-server.cjs` |
+| PM2 ecosystem | `~/.pm2/` |
+| Nginx config | `/etc/nginx/sites-available/s0lstice` |
+| SSL certs | `/etc/letsencrypt/live/your-domain.com/` |
+| Nginx logs | `/var/log/nginx/s0lstice-*.log` |
 
 ---
 
