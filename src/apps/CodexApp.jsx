@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { codexDatabase, bestiaryDatabase } from '../utils/sharedData';
 import { wsClient } from '../utils/websocket';
 import { database, dmMode } from '../utils/database';
@@ -14,6 +14,17 @@ export default function CodexApp() {
   const [showPrivatePages, setShowPrivatePages] = useState(false);
   const isDM = dmMode.isDM();
   const character = database.getCurrentCharacter();
+
+  const loadData = useCallback(() => {
+    const allPages = codexDatabase.getAllPages();
+    const filteredPages = isDM || showPrivatePages
+      ? allPages
+      : allPages.filter(p => !p.isPrivate);
+    setPages(filteredPages);
+
+    const allCreatures = bestiaryDatabase.getAllEntries();
+    setCreatures(allCreatures);
+  }, [isDM, showPrivatePages]);
 
   useEffect(() => {
     loadData();
@@ -43,18 +54,7 @@ export default function CodexApp() {
         ws.off('bestiary_sync');
       }
     };
-  }, []);
-
-  const loadData = () => {
-    const allPages = codexDatabase.getAllPages();
-    const filteredPages = isDM || showPrivatePages
-      ? allPages
-      : allPages.filter(p => !p.isPrivate);
-    setPages(filteredPages);
-
-    const allCreatures = bestiaryDatabase.getAllEntries();
-    setCreatures(allCreatures);
-  };
+  }, [loadData]);
 
   const handleCreatePage = () => {
     const newPage = {

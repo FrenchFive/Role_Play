@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './ContactsApp.css';
 import * as contactsDb from '../utils/sharedData';
 import { database as db, dmMode } from '../utils/database';
@@ -19,6 +19,36 @@ export default function ContactsApp() {
 
   const character = db.getCharacter(db.getCurrentCharacterId());
   const isDM = dmMode.isDM();
+
+  const loadContacts = useCallback(() => {
+    const allContacts = contactsDb.contactsDatabase.getAllContacts();
+    
+    if (isDM) {
+      // DM sees all contacts
+      setContacts(allContacts);
+    } else {
+      // Players see their own contacts + public contacts from others
+      const charId = db.getCurrentCharacterId();
+      const filtered = allContacts.filter(c => 
+        c.characterId === charId || c.visibility === 'public'
+      );
+      setContacts(filtered);
+    }
+  }, [isDM]);
+
+  const loadMessages = useCallback(() => {
+    const allMessages = contactsDb.messagesDatabase.getAllMessages();
+    const charId = db.getCurrentCharacterId();
+    
+    if (isDM) {
+      // DM sees all messages
+      setMessages(allMessages);
+    } else {
+      // Players see their own messages
+      const filtered = allMessages.filter(m => m.characterId === charId);
+      setMessages(filtered);
+    }
+  }, [isDM]);
 
   useEffect(() => {
     loadContacts();
@@ -41,37 +71,7 @@ export default function ContactsApp() {
         window.removeEventListener('message_synced', handleMessageSync);
       };
     }
-  }, []);
-
-  const loadContacts = () => {
-    const allContacts = contactsDb.contactsDatabase.getAllContacts();
-    
-    if (isDM) {
-      // DM sees all contacts
-      setContacts(allContacts);
-    } else {
-      // Players see their own contacts + public contacts from others
-      const charId = db.getCurrentCharacterId();
-      const filtered = allContacts.filter(c => 
-        c.characterId === charId || c.visibility === 'public'
-      );
-      setContacts(filtered);
-    }
-  };
-
-  const loadMessages = () => {
-    const allMessages = contactsDb.messagesDatabase.getAllMessages();
-    const charId = db.getCurrentCharacterId();
-    
-    if (isDM) {
-      // DM sees all messages
-      setMessages(allMessages);
-    } else {
-      // Players see their own messages
-      const filtered = allMessages.filter(m => m.characterId === charId);
-      setMessages(filtered);
-    }
-  };
+  }, [loadContacts, loadMessages]);
 
   const handleAddContact = () => {
     if (!newContact.name.trim()) return;

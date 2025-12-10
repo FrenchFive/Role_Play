@@ -1,8 +1,10 @@
-# 🎯 Hunters RPG - Character Management App
+# 🎯 S0LSTICE_OS - Modern Hunter's Digital Companion
 
-A modern, playful character management application for Hunters role-playing game. Built with React and featuring a vibrant flat UI design with thick black outlines, offset shadows, and pastel colors.
+A modern, professional character management application for Hunters role-playing game. Built with React and featuring a clean, Shopify-inspired flat UI design with modern shadows, smooth transitions, and a vibrant color palette.
 
-![Character Main](https://github.com/user-attachments/assets/cbaad8c9-cdee-4743-b657-83b0110f56a2)
+![Home Screen](https://github.com/user-attachments/assets/4b091266-b0c6-44fc-81ca-000a8e1f73d8)
+
+![Character Select](https://github.com/user-attachments/assets/9e9ed591-3dbb-4243-9aa1-44bc25457b74)
 
 ## ✨ Features
 
@@ -33,13 +35,14 @@ A modern, playful character management application for Hunters role-playing game
 - **Quick Actions**: Fast buttons for common amounts (+$100, +$500, -$50, -$200)
 - **Beautiful UI**: Banking app-style interface with gradient balance card
 
-### 🎨 Playful Flat UI
-- Vibrant pastel colors (pink, blue, yellow, green, purple)
-- Thick 4px black borders for definition
-- Hard offset shadows (6px) for depth
-- Comic Sans MS font for playful feel
-- Smooth animations and hover effects
+### 🎨 Modern Flat UI (Shopify-Inspired)
+- Clean, professional color palette with vibrant accents
+- Subtle shadows and smooth transitions
+- Inter font family for modern typography
+- Smooth hover effects and animations
+- Focus states for accessibility
 - Fully responsive design
+- Modern elevation system
 
 ## 🚀 Getting Started
 
@@ -81,6 +84,40 @@ The built files will be in the `dist` directory.
 ```bash
 npm run preview
 ```
+
+### Verify Build Before Deployment
+
+Use the included build verification script to ensure everything is ready:
+
+```bash
+./verify-build.sh
+```
+
+This script will:
+- Check Node.js and npm versions
+- Verify all dependencies are installed
+- Run linting checks
+- Build the project
+- Validate GitHub Actions compatibility
+
+### Setting Up a Production Server
+
+Use the automated server setup script for Linux:
+
+```bash
+./setup-server.sh
+```
+
+This interactive script will:
+- Update system packages
+- Install Node.js 20.x LTS
+- Install PM2 process manager
+- Set up the WebSocket server
+- Configure Nginx with domain support
+- Optional: Install SSL certificate with Let's Encrypt
+- Configure firewall (UFW)
+
+See [docs/SERVER_SETUP.md](docs/SERVER_SETUP.md) for detailed manual setup instructions.
 
 ## 🎮 How to Use
 
@@ -178,22 +215,24 @@ Edit the CSS variables in `src/styles/theme.css`:
 
 ```css
 :root {
-  --color-primary: #FFB3BA;     /* Main accent color */
-  --color-secondary: #BAE1FF;   /* Secondary accent */
-  --color-accent: #FFFFBA;      /* Highlight color */
-  --color-success: #BAFFC9;     /* Success/positive */
-  --color-warning: #FFDFBA;     /* Warning/caution */
-  --color-danger: #FF9AA2;      /* Danger/negative */
+  --color-primary: #7C3AED;        /* Rich purple - primary brand */
+  --color-secondary: #3B82F6;      /* Bright blue */
+  --color-accent: #F59E0B;         /* Warm amber */
+  --color-success: #10B981;        /* Fresh green */
+  --color-warning: #F59E0B;        /* Amber warning */
+  --color-danger: #EF4444;         /* Bold red */
 }
 ```
 
-### Adjusting Borders and Shadows
+### Adjusting Shadows and Borders
 
 ```css
 :root {
-  --outline-width: 4px;    /* Border thickness */
-  --shadow-offset: 6px;    /* Shadow distance */
-  --shadow-blur: 0px;      /* Shadow blur (0 for hard shadows) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --border-radius-md: 8px;
+  --border-width: 1px;
 }
 ```
 
