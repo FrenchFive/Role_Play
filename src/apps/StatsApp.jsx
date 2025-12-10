@@ -11,11 +11,6 @@ export default function StatsApp() {
   const [selectedBonuses, setSelectedBonuses] = useState([]);
   const [recentRolls, setRecentRolls] = useState([]);
 
-  useEffect(() => {
-    loadCharacter();
-    loadRecentRolls();
-  }, []);
-
   const loadCharacter = () => {
     const currentCharId = db.getCurrentCharacterId();
     if (currentCharId) {
@@ -32,6 +27,12 @@ export default function StatsApp() {
       setRecentRolls(JSON.parse(saved).slice(0, 10));
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCharacter();
+    loadRecentRolls();
+  }, []);
 
   const saveRecentRoll = (roll) => {
     const updated = [roll, ...recentRolls].slice(0, 10);

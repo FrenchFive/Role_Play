@@ -7,10 +7,6 @@ export default function IDCardApp() {
   const [isEditing, setIsEditing] = useState(false);
   const [backstory, setBackstory] = useState('');
 
-  useEffect(() => {
-    loadCharacter();
-  }, []);
-
   const loadCharacter = () => {
     const currentCharId = db.getCurrentCharacterId();
     if (currentCharId) {
@@ -21,6 +17,11 @@ export default function IDCardApp() {
       }
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadCharacter();
+  }, []);
 
   const handleSaveBackstory = () => {
     if (character) {

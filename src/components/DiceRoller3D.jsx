@@ -233,10 +233,12 @@ function DiceRoller3D({ onRollComplete, externalRoll = null }) {
     // Expose roll function
     containerRef.current.rollDice = rollDice;
 
+    // Capture container ref for cleanup
+    const container = containerRef.current;
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      const container = containerRef.current;
       if (container && renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }

@@ -18,10 +18,6 @@ function InventoryApp() {
     description: ''
   });
 
-  useEffect(() => {
-    loadInventory();
-  }, []);
-
   const loadInventory = () => {
     const character = database.getCurrentCharacter();
     if (character) {
@@ -29,6 +25,11 @@ function InventoryApp() {
       setItems(characterItems);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadInventory();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

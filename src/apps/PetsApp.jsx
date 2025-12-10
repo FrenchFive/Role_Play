@@ -17,10 +17,6 @@ function PetsApp() {
     energy: 100
   });
 
-  useEffect(() => {
-    loadPets();
-  }, []);
-
   const loadPets = () => {
     const character = database.getCurrentCharacter();
     if (character) {
@@ -28,6 +24,11 @@ function PetsApp() {
       setPets(characterPets);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadPets();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

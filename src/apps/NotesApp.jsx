@@ -11,10 +11,6 @@ function NotesApp() {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
 
-  useEffect(() => {
-    loadNotes();
-  }, []);
-
   const loadNotes = () => {
     const character = database.getCurrentCharacter();
     if (character) {
@@ -22,6 +18,11 @@ function NotesApp() {
       setNotes(characterNotes);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadNotes();
+  }, []);
 
   const handleNewNote = () => {
     setSelectedNote(null);
