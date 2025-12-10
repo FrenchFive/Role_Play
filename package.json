@@ -1,9 +1,9 @@
 {
-  "name": "hunters-roleplay",
+  "name": "s0lstice-os",
   "private": true,
   "version": "1.0.0",
   "main": "electron/main.js",
-  "description": "Hunters RPG Character Management Desktop App",
+  "description": "S0LSTICE_OS - Your Hunter's Digital Companion",
   "author": "FrenchFive",
   "scripts": {
     "dev": "vite",
@@ -18,8 +18,8 @@
     "electron:build:linux": "npm run build && electron-builder --linux"
   },
   "build": {
-    "appId": "com.frenchfive.hunters-roleplay",
-    "productName": "Hunters RPG",
+    "appId": "com.frenchfive.s0lstice-os",
+    "productName": "S0LSTICE_OS",
     "directories": {
       "output": "release"
     },
