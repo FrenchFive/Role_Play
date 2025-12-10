@@ -21,6 +21,7 @@ import {
   ScrollIcon,
   DiceIcon,
   GlobeIcon,
+  ShieldIcon,
 } from '../components/icons/Icons';
 import './HomeScreen.css';
 
@@ -43,6 +44,7 @@ const APPS = [
   { id: 'touchstones', name: 'Touchstones', icon: AnchorIcon, color: 'var(--app-color-5)' },
   { id: 'chronicle', name: 'Chronicle', icon: ScrollIcon, color: 'var(--app-color-6)' },
   { id: 'dice', name: 'Dice Roller', icon: DiceIcon, color: 'var(--app-color-4)' },
+  { id: 'edges', name: 'Edges', icon: ShieldIcon, color: 'var(--app-color-7)' },
   { id: 'settings', name: 'Settings', icon: SettingsIcon, color: 'var(--app-color-8)' }
 ];
 

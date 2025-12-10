@@ -27,6 +27,7 @@ import TouchstonesApp from './apps/TouchstonesApp';
 import ChronicleApp from './apps/ChronicleApp';
 import AdvancedDiceApp from './apps/AdvancedDiceApp';
 import CampaignApp from './apps/CampaignApp';
+import EdgesApp from './apps/EdgesApp';
 
 // Utils
 import { database, dmMode } from './utils/database';
@@ -54,6 +55,7 @@ const SIMPLE_APPS = {
   chronicle: ChronicleApp,
   dice: AdvancedDiceApp,
   campaign: CampaignApp,
+  edges: EdgesApp,
 };
 
 // Placeholder for requiring character selection

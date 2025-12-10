@@ -516,3 +516,12 @@ export const CopyIcon = (props) => (
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </IconWrapper>
 );
+
+// Info icon
+export const InfoIcon = (props) => (
+  <IconWrapper {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </IconWrapper>
+);
