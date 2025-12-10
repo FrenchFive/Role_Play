@@ -100,6 +100,69 @@ export const database = {
     };
   },
 
+  // Award XP to a character
+  awardXP(id, amount, reason = 'Session reward') {
+    const character = this.getCharacter(id);
+    if (!character) return null;
+    
+    // Initialize experience if not present
+    if (!character.experience) {
+      character.experience = { total: 0, spent: 0, log: [] };
+    }
+    
+    character.experience.total += amount;
+    character.experience.log.unshift({
+      timestamp: new Date().toISOString(),
+      type: 'xp_award',
+      description: `Gained ${amount} XP: ${reason}`,
+      cost: -amount,
+      before: character.experience.total - amount,
+      after: character.experience.total
+    });
+    
+    // Keep log manageable
+    if (character.experience.log.length > 100) {
+      character.experience.log = character.experience.log.slice(0, 100);
+    }
+    
+    return this.saveCharacter(character);
+  },
+
+  // Spend XP on an upgrade
+  spendXP(id, amount, description, changeLog = {}) {
+    const character = this.getCharacter(id);
+    if (!character) return null;
+    
+    // Initialize experience if not present
+    if (!character.experience) {
+      character.experience = { total: 0, spent: 0, log: [] };
+    }
+    
+    // Check if enough XP available
+    const available = character.experience.total - character.experience.spent;
+    if (amount > available) {
+      return null; // Not enough XP
+    }
+    
+    character.experience.spent += amount;
+    character.experience.log.unshift({
+      timestamp: new Date().toISOString(),
+      type: 'xp_spend',
+      description: description,
+      cost: amount,
+      ...changeLog
+    });
+    
+    return this.saveCharacter(character);
+  },
+
+  // Get XP history for a character
+  getXPHistory(id, limit = 20) {
+    const character = this.getCharacter(id);
+    if (!character || !character.experience?.log) return [];
+    return character.experience.log.slice(0, limit);
+  },
+
   // Delete character
   deleteCharacter(id) {
     const characters = this.getAllCharacters();
