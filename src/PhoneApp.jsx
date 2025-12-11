@@ -5,7 +5,6 @@ import HomeScreen from './apps/HomeScreen';
 // Pages
 import CharacterSelect from './pages/CharacterSelect';
 import CharacterCreator from './pages/CharacterCreator';
-import CharacterMain from './pages/CharacterMain';
 import BankPage from './pages/BankPage';
 import Settings from './pages/Settings';
 
@@ -13,9 +12,8 @@ import Settings from './pages/Settings';
 import FriendsApp from './apps/FriendsApp';
 import CodexApp from './apps/CodexApp';
 import MapApp from './apps/MapApp';
-import IDCardApp from './apps/IDCardApp';
+import IdentityApp from './apps/IDCardApp';
 import ContactsApp from './apps/ContactsApp';
-import StatsApp from './apps/StatsApp';
 import QuestApp from './apps/QuestApp';
 import InventoryApp from './apps/InventoryApp';
 import PetsApp from './apps/PetsApp';
@@ -25,7 +23,6 @@ import DMRewardsApp from './apps/DMRewardsApp';
 import ConditionsApp from './apps/ConditionsApp';
 import TouchstonesApp from './apps/TouchstonesApp';
 import ChronicleApp from './apps/ChronicleApp';
-import AdvancedDiceApp from './apps/AdvancedDiceApp';
 import CampaignApp from './apps/CampaignApp';
 import EdgesApp from './apps/EdgesApp';
 
@@ -36,14 +33,12 @@ import { wsClient } from './utils/websocket';
 // Icons
 import { UserIcon, WalletIcon } from './components/icons/Icons';
 
-// Simple app components mapping
+// Simple app components mapping (dice is handled on home screen)
 const SIMPLE_APPS = {
   friends: FriendsApp,
   codex: CodexApp,
   map: MapApp,
-  id: IDCardApp,
   contacts: ContactsApp,
-  stats: StatsApp,
   quest: QuestApp,
   inventory: InventoryApp,
   pets: PetsApp,
@@ -53,7 +48,6 @@ const SIMPLE_APPS = {
   conditions: ConditionsApp,
   touchstones: TouchstonesApp,
   chronicle: ChronicleApp,
-  dice: AdvancedDiceApp,
   campaign: CampaignApp,
   edges: EdgesApp,
 };
@@ -144,14 +138,31 @@ function PhoneApp() {
     handleBackToHome();
   }, [handleBackToHome]);
 
+  const handleClearCharacter = useCallback(() => {
+    // Clear current character and go to character select
+    setCurrentCharacter(null);
+    setIsDMMode(false);
+    dmMode.setDM(false);
+    setCurrentApp('identity');
+  }, []);
+
+  const handleDeleteCharacter = useCallback((charId) => {
+    // Delete the character from database
+    database.deleteCharacter(charId);
+    // Clear current character
+    setCurrentCharacter(null);
+    // Go to character select
+    setCurrentApp('identity');
+  }, []);
+
   const renderApp = () => {
     // Home screen
     if (currentApp === 'home') {
       return <HomeScreen onAppOpen={handleAppOpen} />;
     }
 
-    // Character app with special flow
-    if (currentApp === 'character') {
+    // Identity app - the main character hub (combines old ID Card, Character, and Stats)
+    if (currentApp === 'identity') {
       if (isCreatingCharacter) {
         return (
           <CharacterCreator
@@ -171,14 +182,18 @@ function PhoneApp() {
       }
       if (currentCharacter) {
         return (
-          <CharacterMain
+          <IdentityApp
             character={currentCharacter}
             onUpdate={setCurrentCharacter}
+            onSelectCharacter={() => {
+              setCurrentCharacter(null);
+              // This will show the character select screen
+            }}
           />
         );
       }
-      // DM mode without character - go to home
-      return <HomeScreen onAppOpen={handleAppOpen} />;
+      // DM mode without character - show identity app anyway
+      return <IdentityApp />;
     }
 
     // Bank requires character
@@ -188,7 +203,7 @@ function PhoneApp() {
           <RequireCharacter
             icon={WalletIcon}
             title="Bank"
-            onSelectCharacter={() => handleAppOpen('character')}
+            onSelectCharacter={() => handleAppOpen('identity')}
           />
         );
       }
@@ -201,6 +216,8 @@ function PhoneApp() {
         <Settings
           currentCharacter={currentCharacter}
           onClose={handleBackToHome}
+          onClearCharacter={handleClearCharacter}
+          onDeleteCharacter={handleDeleteCharacter}
         />
       );
     }
